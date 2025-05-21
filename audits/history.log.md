@@ -13,3 +13,7 @@
 - Cached valid markers during diff analyzer initialization
 - Batched line writing in context graph export for improved I/O
 - Expanded documentation with NLU pipeline instructions and audit directory details
+
+## 2025-05-21
+- Added ``ParallelExecutor`` for true parallel task orchestration
+- Documented usage in README
