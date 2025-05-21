@@ -80,6 +80,10 @@ For parallel execution of tasks, use the ParallelFeatureDevCycle chain:
 ```
 
 This utilizes the Module_ParallelAsync to coordinate multiple tasks running concurrently.
+The underlying implementation uses the ``ParallelExecutor`` class to spawn
+threads for each module, respecting the ``max_parallel_tasks`` setting in
+``execution-budget.yaml``. Each run records results in
+``audits/parallel_execution.log.md`` for traceability.
 
 ### Analyzing Diffs
 
