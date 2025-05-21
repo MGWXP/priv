@@ -138,3 +138,21 @@ To contribute to this project:
 4. Update the audit trail with meaningful diffs and logs
 5. Follow semantic linking rules when creating new components
 6. Prefix commit messages with a coherence marker like `[feat]`, `[fix]`, or `[docs]`
+
+## NLU Documentation Pipeline
+
+This repository includes an automated documentation analysis pipeline that
+validates Markdown files, builds cross-document relationships, and generates a
+knowledge graph. The pipeline helps keep the documentation consistent with the
+codebase and highlights areas that need attention.
+
+Run the full pipeline with:
+
+```bash
+./tools/nlu/docs-cli run-all
+```
+
+Reports are written to `docs/synthesis/reports/` and the interactive knowledge
+graph can be found in `docs/synthesis/visualizations/`. See
+`docs/nlu/README.md` for an overview and `docs/nlu/cli_guide.md` for detailed
+command information.
