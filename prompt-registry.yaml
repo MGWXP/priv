@@ -6,6 +6,14 @@ modules:
     status: active
     last_update: "2025-05-20"
     marker: feat
+  - name: Module_BugFixer
+    file: prompt-library/module_bug_fixer.v1.md
+    version: 1.0
+    description: Guides bug fixes by reproducing issues and verifying patches.
+    status: active
+    last_update: "2025-05-20"
+    marker: fix
+
     
   - name: Module_TestGenerator
     file: prompt-library/module_test_generator.v1.md
@@ -92,6 +100,10 @@ dependencies:
   - chain: "PerformanceOptimization"
     sequence: ["Module_Observability", "Module_Refactor", "Module_RegressionSuite", "Module_DiffAnalyzerV2"]
     description: "Workflow for identifying and implementing performance improvements."
+  - chain: "BugFixCycle"
+    sequence: ["Module_BugFixer", "Module_TestGenerator", "Module_DiffAnalyzer"]
+    description: "Workflow for bug fixes with updated tests and diff review."
+
 
 categories:
   - name: "feature-development"
@@ -99,7 +111,7 @@ categories:
     description: "Modules for implementing new features"
     
   - name: "maintenance"
-    modules: ["Module_Refactor", "Module_DiffAnalyzer", "Module_DiffAnalyzerV2"]
+    modules: ["Module_Refactor", "Module_DiffAnalyzer", "Module_DiffAnalyzerV2", "Module_BugFixer"]
     description: "Modules for maintaining and improving existing code"
     
   - name: "documentation"
@@ -117,7 +129,7 @@ markers:
 
   - name: "fix"
     description: "Bug fix"
-    modules: ["Module_TaskA"]
+    modules: ["Module_BugFixer"]
 
   - name: "refactor"
     description: "Code restructuring without behavior change"

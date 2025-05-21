@@ -69,6 +69,9 @@ The repository includes a CLI utility for working with the AI workflow system:
 
 # Execute a single module
 ./scripts/ai_workflow_cli.py execute-module Module_TaskA
+
+# Execute bug fix workflow
+./scripts/ai_workflow_cli.py execute-chain BugFixCycle --context '{"issue": "login-failure"}'
 ```
 
 ### Parallel Execution
@@ -120,6 +123,7 @@ To visualize the relationships between modules and their input/output contexts:
 ├── prompt-chains.graphml       # Visual representation of prompt relationships
 ├── prompt-registry.yaml        # Index of prompt modules, versions, and metadata
 ├── module_taskA.v1.md          # Example prompt module
+├── module_bug_fixer.v1.md      # Example prompt module for bug fixes
 ├── module_test_generator.v1.md # Example prompt module
 ├── scripts/                    # Utility scripts
 ├── tools/                      # NLU tools and helpers
