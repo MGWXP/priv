@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repository Knowledge Graph</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/vis-network.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-data/7.1.2/vis-data.min.js"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #header {
+            background-color: #f3f4f6;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        #header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+        #controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 1rem;
+            background-color: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        #filters {
+            display: flex;
+            gap: 1rem;
+        }
+        #network {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        #details {
+            position: absolute;
+            right: 1rem;
+            top: 8rem;
+            width: 300px;
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: none;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        #close-details {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+        }
+        .legend {
+            position: absolute;
+            left: 1rem;
+            bottom: 1rem;
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .color-box {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.5rem;
+            border-radius: 4px;
+        }
+        .edge-line {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .edge-line hr {
+            width: 40px;
+            margin-right: 0.5rem;
+            border: none;
+            height: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>Codex Web-Native Repository Knowledge Graph</h1>
+    </div>
+    
+    <div id="controls">
+        <div id="filters">
+            <div>
+                <label for="layer-filter">Taxonomy Layer:</label>
+                <select id="layer-filter">
+                    <option value="all">All Layers</option>
+                    <option value="config">Config</option>
+                    <option value="prompts">Prompts</option>
+                    <option value="code">Code</option>
+                    <option value="docs">Docs</option>
+                    <option value="audit">Audit</option>
+                </select>
+            </div>
+            <div>
+                <label for="relationship-filter">Relationship Type:</label>
+                <select id="relationship-filter">
+                    <option value="all">All Relationships</option>
+                    <option value="references">References</option>
+                    <option value="implements">Implements</option>
+                    <option value="tests">Tests</option>
+                    <option value="documents">Documents</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <button id="physics-toggle">Toggle Physics</button>
+            <button id="focus-center">Center View</button>
+        </div>
+    </div>
+    
+    <div id="network"></div>
+    
+    <div id="details">
+        <button id="close-details">&times;</button>
+        <h2 id="details-title">Document Details</h2>
+        <div id="details-content"></div>
+    </div>
+    
+    <div class="legend">
+        <h3 style="margin-top: 0;">Legend</h3>
+        <div class="legend-item">
+            <div class="color-box" style="background-color: #3b82f6;"></div>
+            <span>Config Layer</span>
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background-color: #10b981;"></div>
+            <span>Prompts Layer</span>
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background-color: #f59e0b;"></div>
+            <span>Code Layer</span>
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background-color: #8b5cf6;"></div>
+            <span>Docs Layer</span>
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background-color: #ef4444;"></div>
+            <span>Audit Layer</span>
+        </div>
+        
+        <div class="edge-line">
+            <hr style="background-color: #64748b;">
+            <span>References</span>
+        </div>
+        <div class="edge-line">
+            <hr style="background-color: #10b981; border-style: dashed;">
+            <span>Implements</span>
+        </div>
+        <div class="edge-line">
+            <hr style="background-color: #f59e0b; border-style: dotted;">
+            <span>Tests</span>
+        </div>
+        <div class="edge-line">
+            <hr style="background-color: #8b5cf6; border-style: dashed;">
+            <span>Documents</span>
+        </div>
+    </div>
+
+    <script>
+        // Load graph data from JSON file
+        fetch('knowledge_graph.json')
+            .then(response => response.json())
+            .then(graph => {
+                const container = document.getElementById('network');
+                
+                // Process nodes
+                const nodes = new vis.DataSet(graph.nodes.map(node => {
+                    let color;
+                    switch(node.group) {
+                        case 'config': color = '#3b82f6'; break; // Blue
+                        case 'prompts': color = '#10b981'; break; // Green
+                        case 'code': color = '#f59e0b'; break; // Amber
+                        case 'docs': color = '#8b5cf6'; break; // Purple
+                        case 'audit': color = '#ef4444'; break; // Red
+                        default: color = '#9ca3af'; // Gray
+                    }
+                    
+                    const size = node.group === 'config' ? 25 : 20;
+                    
+                    return {
+                        id: node.id,
+                        label: node.label,
+                        group: node.group,
+                        color: { background: color, border: '#1f2937', highlight: { background: '#fff', border: color } },
+                        font: { color: '#1f2937' },
+                        size: size,
+                        type: node.type,
+                        title: node.id
+                    };
+                }));
+                
+                // Process edges
+                const edges = new vis.DataSet(graph.edges.map(edge => {
+                    let color, dashes;
+                    switch(edge.type) {
+                        case 'references': 
+                            color = '#64748b'; 
+                            dashes = false;
+                            break;
+                        case 'implements': 
+                            color = '#10b981'; 
+                            dashes = [5, 5];
+                            break;
+                        case 'tests': 
+                            color = '#f59e0b'; 
+                            dashes = [2, 2];
+                            break;
+                        case 'documents': 
+                            color = '#8b5cf6'; 
+                            dashes = [5, 5];
+                            break;
+                        default: 
+                            color = '#cbd5e1'; 
+                            dashes = false;
+                    }
+                    
+                    return {
+                        from: edge.from,
+                        to: edge.to,
+                        arrows: 'to',
+                        label: edge.label,
+                        type: edge.type,
+                        color: { color: color, highlight: color },
+                        dashes: dashes,
+                        width: 1.5,
+                        font: { size: 10, color: '#1f2937', align: 'middle' }
+                    };
+                }));
+                
+                // Configure physics
+                const options = {
+                    physics: {
+                        enabled: true,
+                        barnesHut: {
+                            gravitationalConstant: -5000,
+                            centralGravity: 0.3,
+                            springLength: 150,
+                            springConstant: 0.04,
+                            damping: 0.09
+                        }
+                    },
+                    layout: {
+                        hierarchical: {
+                            enabled: false
+                        }
+                    },
+                    interaction: {
+                        navigationButtons: true,
+                        keyboard: true,
+                        hover: true
+                    },
+                    groups: {
+                        config: { shape: 'hexagon' },
+                        prompts: { shape: 'diamond' },
+                        code: { shape: 'box' },
+                        docs: { shape: 'ellipse' },
+                        audit: { shape: 'triangle' }
+                    }
+                };
+                
+                // Create network
+                const network = new vis.Network(container, { nodes, edges }, options);
+                
+                // Show node details on click
+                network.on('click', function(params) {
+                    if (params.nodes.length === 1) {
+                        const nodeId = params.nodes[0];
+                        const node = nodes.get(nodeId);
+                        
+                        document.getElementById('details-title').textContent = node.label;
+                        
+                        let content = `
+                            <p><strong>Path:</strong> ${nodeId}</p>
+                            <p><strong>Type:</strong> ${node.type || 'Unknown'}</p>
+                            <p><strong>Layer:</strong> ${node.group || 'Unknown'}</p>
+                        `;
+                        
+                        // Get connected nodes
+                        const connectedNodes = network.getConnectedNodes(nodeId);
+                        const connectedEdges = network.getConnectedEdges(nodeId);
+                        
+                        // Outgoing relationships
+                        const outgoing = [];
+                        const incoming = [];
+                        
+                        connectedEdges.forEach(edgeId => {
+                            const edge = edges.get(edgeId);
+                            if (edge.from === nodeId) {
+                                outgoing.push({
+                                    target: nodes.get(edge.to).label,
+                                    type: edge.type,
+                                    id: edge.to
+                                });
+                            } else if (edge.to === nodeId) {
+                                incoming.push({
+                                    source: nodes.get(edge.from).label,
+                                    type: edge.type,
+                                    id: edge.from
+                                });
+                            }
+                        });
+                        
+                        if (outgoing.length > 0) {
+                            content += '<h3>Outgoing Relationships</h3><ul>';
+                            outgoing.forEach(rel => {
+                                content += `<li><strong>${rel.type}:</strong> ${rel.target}</li>`;
+                            });
+                            content += '</ul>';
+                        }
+                        
+                        if (incoming.length > 0) {
+                            content += '<h3>Incoming Relationships</h3><ul>';
+                            incoming.forEach(rel => {
+                                content += `<li><strong>${rel.type} by:</strong> ${rel.source}</li>`;
+                            });
+                            content += '</ul>';
+                        }
+                        
+                        document.getElementById('details-content').innerHTML = content;
+                        document.getElementById('details').style.display = 'block';
+                    } else {
+                        document.getElementById('details').style.display = 'none';
+                    }
+                });
+                
+                // Filter nodes by layer
+                document.getElementById('layer-filter').addEventListener('change', function() {
+                    filterGraph();
+                });
+                
+                // Filter edges by relationship type
+                document.getElementById('relationship-filter').addEventListener('change', function() {
+                    filterGraph();
+                });
+                
+                // Toggle physics
+                document.getElementById('physics-toggle').addEventListener('click', function() {
+                    options.physics.enabled = !options.physics.enabled;
+                    network.setOptions({ physics: options.physics });
+                });
+                
+                // Center view
+                document.getElementById('focus-center').addEventListener('click', function() {
+                    network.fit();
+                });
+                
+                // Close details panel
+                document.getElementById('close-details').addEventListener('click', function() {
+                    document.getElementById('details').style.display = 'none';
+                });
+                
+                // Filter function
+                function filterGraph() {
+                    const layerFilter = document.getElementById('layer-filter').value;
+                    const relationshipFilter = document.getElementById('relationship-filter').value;
+                    
+                    // Filter nodes
+                    const filteredNodeIds = graph.nodes
+                        .filter(node => layerFilter === 'all' || node.group === layerFilter)
+                        .map(node => node.id);
+                    
+                    // Filter edges
+                    const filteredEdgeIds = graph.edges
+                        .filter(edge => {
+                            const nodeCondition = 
+                                filteredNodeIds.includes(edge.from) && 
+                                filteredNodeIds.includes(edge.to);
+                                
+                            const relCondition = 
+                                relationshipFilter === 'all' || 
+                                edge.type === relationshipFilter;
+                                
+                            return nodeCondition && relCondition;
+                        })
+                        .map((edge, index) => `edge-${index}`);
+                    
+                    // Update view
+                    nodes.update(graph.nodes.map(node => ({
+                        id: node.id,
+                        hidden: !filteredNodeIds.includes(node.id)
+                    })));
+                    
+                    edges.update(graph.edges.map((edge, index) => ({
+                        id: `edge-${index}`,
+                        from: edge.from,
+                        to: edge.to,
+                        hidden: !filteredEdgeIds.includes(`edge-${index}`)
+                    })));
+                }
+            })
+            .catch(error => {
+                console.error('Error loading graph data:', error);
+                document.getElementById('network').innerHTML = '<div style="padding: 2rem; text-align: center;">Error loading graph data. Please make sure knowledge_graph.json has been generated.</div>';
+            });
+    </script>
+</body>
+</html>
