@@ -1,0 +1,11 @@
+{
+  "nodes": [
+    {"id": "README.md", "label": "README", "group": "docs"},
+    {"id": "docs/nlu/README.md", "label": "NLU README", "group": "docs"},
+    {"id": "docs/synthesis/visualizations/knowledge_graph_viewer.html", "label": "Viewer", "group": "docs"}
+  ],
+  "edges": [
+    {"from": "README.md", "to": "docs/nlu/README.md", "label": "references"},
+    {"from": "docs/nlu/README.md", "to": "docs/synthesis/visualizations/knowledge_graph_viewer.html", "label": "references"}
+  ]
+}
