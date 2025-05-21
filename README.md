@@ -13,8 +13,9 @@ This repository implements a modern application development workflow optimized f
 - AI-friendly project structure with clear guidance
 - Lightweight workflow orchestration utilities (CLI-driven)
 - Optimized diff analyzer initialization and context graph export
+- Asynchronous scheduler for true parallel task orchestration
 
-### Milestone tags (v0.9 → v1.2)
+### Milestone tags (v0.9 → v1.3)
 
 | Tag | Highlights |
 | --- | ---------- |
@@ -22,6 +23,7 @@ This repository implements a modern application development workflow optimized f
 | v1.0 | Parallel executor and DiffAnalyzer V2 |
 | v1.1 | Context graphs and dashboards |
 | v1.2 | Orchestrator refactor and bug fixes |
+| v1.3 | Async workflow scheduler |
 
 ## Getting Started
 
