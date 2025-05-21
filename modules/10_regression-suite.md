@@ -1,6 +1,6 @@
 ---
 name: "Module_RegressionSuite"
-version: "1.0"
+version: "1.1"
 description: "Manages comprehensive regression testing to prevent performance and functional regressions."
 inputs: ["tests/", "src/"]
 outputs: ["tests/"]
@@ -18,4 +18,4 @@ This module runs and maintains a suite of regression tests to catch regressions 
 
 ## Prompt
 
-Execute the full regression test suite using `pytest`. Ensure coverage meets the target specified in `execution-budget.yaml` and report results.
+Execute the full regression test suite using `pytest`. Parse the output to determine success or failure and return the summary. If any tests fail, trigger the appropriate fix cycle before proceeding. Integrate with Observability and DiffAnalyzer modules to run automatically after risky changes or major refactors.

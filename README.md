@@ -101,6 +101,15 @@ To update performance metrics and generate dashboards:
 ./scripts/ai_workflow_cli.py monitor-performance --generate-dashboard
 ```
 
+### Running the Regression Suite
+
+To execute the full regression test suite and verify that existing features
+remain intact:
+
+```bash
+./scripts/ai_workflow_cli.py run-regression --tests-path tests
+```
+
 ### Visualizing Context Graphs
 
 To visualize the relationships between modules and their input/output contexts:

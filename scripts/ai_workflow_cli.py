@@ -24,6 +24,7 @@ try:
         ContextGraphManager,
         SemanticDiffAnalyzer,
         PerformanceMonitor,
+        RegressionSuiteRunner,
     )
 except ImportError:
     print(
@@ -216,6 +217,20 @@ def monitor_performance(args):
             print(f"- {file_path}")
 
 
+def run_regression(args):
+    """Run the regression test suite and report results."""
+
+    runner = RegressionSuiteRunner(args.tests_path)
+    results = runner.run()
+    print(results["output"])
+
+    if results["returncode"] == 0:
+        print("\n✅ Regression suite passed")
+    else:
+        print("\n❌ Regression suite failed")
+        sys.exit(results["returncode"])
+
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(description="AI Workflow CLI Utility")
@@ -295,6 +310,14 @@ def main():
         help="Generate performance dashboard",
     )
 
+    # Run regression command
+    regression_parser = subparsers.add_parser(
+        "run-regression", help="Execute the regression test suite"
+    )
+    regression_parser.add_argument(
+        "--tests-path", default="tests", help="Path to the tests directory"
+    )
+
     args = parser.parse_args()
 
     # Execute the appropriate command
@@ -308,6 +331,8 @@ def main():
         visualize_context(args)
     elif args.command == "monitor-performance":
         monitor_performance(args)
+    elif args.command == "run-regression":
+        run_regression(args)
     else:
         parser.print_help()
 
