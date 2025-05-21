@@ -56,6 +56,14 @@
       <data key="status">active</data>
       <data key="marker">chore</data>
     </node>
+
+    <node id="Module_BugFixer">
+      <data key="name">Module_BugFixer</data>
+      <data key="description">Guides the AI in reproducing and fixing bugs with minimal changes.</data>
+      <data key="version">1.0</data>
+      <data key="status">active</data>
+      <data key="marker">fix</data>
+    </node>
     
     <node id="Module_ParallelAsync">
       <data key="name">Module_ParallelAsync</data>
@@ -130,6 +138,17 @@
     <edge source="Module_RegressionSuite" target="Module_DiffAnalyzerV2">
       <data key="relation">next</data>
       <data key="description">Analyze refactoring changes</data>
+    </edge>
+
+    <!-- BugFixCycle chain -->
+    <edge source="Module_BugFixer" target="Module_TestGenerator">
+      <data key="relation">next</data>
+      <data key="description">Generate tests after applying a bug fix</data>
+    </edge>
+
+    <edge source="Module_TestGenerator" target="Module_DiffAnalyzer">
+      <data key="relation">validate</data>
+      <data key="description">Review the fix with diff analysis</data>
     </edge>
     
     <!-- RefactorCycle chain -->

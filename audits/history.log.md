@@ -27,3 +27,7 @@
 ## 2025-05-22
 - Expanded `DiffAnalyzerV2` with marker alignment checks and coding standard validation.
 - Updated module documentation and README with new analyzer capabilities.
+
+## 2025-05-23
+- Added dedicated `Module_BugFixer` for handling `[fix]` tasks.
+- Introduced `BugFixCycle` chain and updated prompt registry and README.
