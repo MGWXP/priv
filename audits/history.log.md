@@ -13,3 +13,9 @@
 - Cached valid markers during diff analyzer initialization
 - Batched line writing in context graph export for improved I/O
 - Expanded documentation with NLU pipeline instructions and audit directory details
+
+## 2025-05-21
+- Implemented threaded execution in `WorkflowOrchestrator` for true parallel task
+  orchestration.
+- Added test coverage for the parallel chain and documented the new scheduler in
+  the README.

@@ -15,6 +15,19 @@ def test_orchestrator_execute_chain(tmp_path):
     assert os.path.exists(path)
 
 
+def test_parallel_chain(tmp_path):
+    orch = WorkflowOrchestrator()
+    result = orch.execute_chain("ParallelFeatureDevCycle", {"foo": "bar"})
+    assert result["status"] == "completed"
+    for mod in [
+        "Module_TaskA",
+        "Module_TestGenerator",
+        "Module_DocWriter",
+        "Module_DiffAnalyzerV2",
+    ]:
+        assert mod in result["executed"]
+
+
 def test_context_graph_manager(tmp_path):
     manager = ContextGraphManager()
     manager.update_from_runtime({"a": 1})
