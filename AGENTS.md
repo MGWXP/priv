@@ -97,6 +97,9 @@ Creates and updates documentation to match current implementations. Ensures READ
 ### DiffAnalyzer
 Reviews changes to ensure they meet project standards and implement requirements correctly. Works with the audit system to track changes over time. Uses Module_DiffAnalyzer prompt.
 
+### BugFixer
+Replicates and resolves reported bugs with minimal changes. Uses Module_BugFixer and ensures tests reflect the fix. Typically run via the BugFixCycle chain.
+
 ### ParallelExecutor
 Manages parallel task execution and resource allocation. Ensures that multiple AI agents can work simultaneously without conflicts. Uses Module_ParallelAsync.
 
