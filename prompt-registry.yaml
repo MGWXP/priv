@@ -1,6 +1,6 @@
 modules:
   - name: Module_TaskA
-    file: module_taskA.v1.md
+    file: prompt-library/module_taskA.v1.md
     version: 1.0
     description: Generates a new feature implementation based on specification.
     status: active
@@ -8,7 +8,7 @@ modules:
     marker: feat
     
   - name: Module_TestGenerator
-    file: module_test_generator.v1.md
+    file: prompt-library/module_test_generator.v1.md
     version: 1.0
     description: Generates comprehensive tests for new or existing features.
     status: active
@@ -16,7 +16,7 @@ modules:
     marker: test
     
   - name: Module_Refactor
-    file: module_refactor.v1.md
+    file: prompt-library/module_refactor.v1.md
     version: 1.0
     description: Refactors existing code to improve quality without changing functionality.
     status: active
@@ -24,7 +24,7 @@ modules:
     marker: refactor
     
   - name: Module_DocWriter
-    file: module_doc_writer.v1.md
+    file: prompt-library/module_doc_writer.v1.md
     version: 1.0
     description: Creates or updates documentation for code, features, and APIs.
     status: active
@@ -32,7 +32,7 @@ modules:
     marker: docs
     
   - name: Module_DiffAnalyzer
-    file: module_diff_analyzer.v1.md
+    file: prompt-library/module_diff_analyzer.v1.md
     version: 1.0
     description: Analyzes code changes to evaluate impact, quality, and potential issues.
     status: active
