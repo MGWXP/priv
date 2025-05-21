@@ -11,6 +11,7 @@ This repository implements a modern application development workflow optimized f
 - Parallel task support and semantic prompt chaining
 - Comprehensive testing and performance tracking
 - AI-friendly project structure with clear guidance
+- Lightweight workflow orchestration utilities (CLI-driven)
 
 ## Getting Started
 
