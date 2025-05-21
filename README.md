@@ -43,10 +43,10 @@ The repository includes a CLI utility for working with the AI workflow system:
 ./make-workflow-cli-executable.sh
 
 # Execute a prompt chain
-./ai_workflow_cli.py execute-chain FeatureDevCycle --context '{"feature": "user-authentication"}'
+./scripts/ai_workflow_cli.py execute-chain FeatureDevCycle --context '{"feature": "user-authentication"}'
 
 # Execute a single module
-./ai_workflow_cli.py execute-module Module_TaskA
+./scripts/ai_workflow_cli.py execute-module Module_TaskA
 ```
 
 ### Parallel Execution
@@ -54,7 +54,7 @@ The repository includes a CLI utility for working with the AI workflow system:
 For parallel execution of tasks, use the ParallelFeatureDevCycle chain:
 
 ```bash
-./ai_workflow_cli.py execute-chain ParallelFeatureDevCycle
+./scripts/ai_workflow_cli.py execute-chain ParallelFeatureDevCycle
 ```
 
 This utilizes the Module_ParallelAsync to coordinate multiple tasks running concurrently.
@@ -64,7 +64,7 @@ This utilizes the Module_ParallelAsync to coordinate multiple tasks running conc
 To analyze semantic diffs and verify coherence marker compliance:
 
 ```bash
-./ai_workflow_cli.py analyze-diff --old-file src/old.py --new-file src/new.py --marker feat
+./scripts/ai_workflow_cli.py analyze-diff --old-file src/old.py --new-file src/new.py --marker feat
 ```
 
 ### Monitoring Performance
@@ -73,10 +73,10 @@ To update performance metrics and generate dashboards:
 
 ```bash
 # Update metrics for the current iteration
-./ai_workflow_cli.py monitor-performance --update --metrics '{"test_count": 42, "code_coverage": 85}'
+./scripts/ai_workflow_cli.py monitor-performance --update --metrics '{"test_count": 42, "code_coverage": 85}'
 
 # Generate performance dashboard
-./ai_workflow_cli.py monitor-performance --generate-dashboard
+./scripts/ai_workflow_cli.py monitor-performance --generate-dashboard
 ```
 
 ### Visualizing Context Graphs
@@ -84,7 +84,7 @@ To update performance metrics and generate dashboards:
 To visualize the relationships between modules and their input/output contexts:
 
 ```bash
-./ai_workflow_cli.py visualize-context --format html
+./scripts/ai_workflow_cli.py visualize-context --format html
 ```
 
 ## Project Structure
@@ -93,7 +93,7 @@ To visualize the relationships between modules and their input/output contexts:
 /  (Project Root)
 ├── AGENTS.md                   # Project-level AI orchestration guidelines
 ├── README.md                   # This file - human-readable project overview
-├── ai_workflow_cli.py          # CLI utility for AI workflow
+├── scripts/ai_workflow_cli.py  # CLI utility for AI workflow
 ├── execution-budget.yaml       # Resource limits and performance targets
 ├── prompt-chains.graphml       # Visual representation of prompt relationships
 ├── prompt-registry.yaml        # Index of prompt modules, versions, and metadata
@@ -103,7 +103,10 @@ To visualize the relationships between modules and their input/output contexts:
 ├── tools/                      # NLU tools and helpers
 ├── docs/                       # Documentation
 ├── run.sh                      # Launch script
-├── main.py                     # Application entry point
+├── src/                        # Application source code
+│   ├── app.py                  # Application entry point
+│   ├── auth/                   # Authentication package
+│   └── ai_workflow/            # AI workflow modules
 └── (additional files and stubs)
 ```
 
