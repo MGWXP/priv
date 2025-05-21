@@ -1,4 +1,5 @@
 import os
+import json
 import pytest
 from ai_workflow import (
     WorkflowOrchestrator,
@@ -52,7 +53,7 @@ def test_semantic_diff_analyzer(tmp_path):
 
 def test_performance_monitor(tmp_path):
     monitor = PerformanceMonitor()
-    metrics = {"inp_ms": 50}
+    metrics = {"inp_ms": 50, "cls_ms": 40, "tbt_ms": 30}
     assert monitor.update_iteration_metrics("123", metrics)
     comp = monitor.check_budget_compliance(metrics)
     dash_files = monitor.generate_performance_dashboard()
@@ -69,9 +70,16 @@ def test_chain_generates_metrics(tmp_path, monkeypatch):
 
     monkeypatch.setattr(orch_mod, "PerformanceMonitor", _mon_factory)
     orch = WorkflowOrchestrator()
-    orch.execute_chain("demo")
+    orch.execute_chain(
+        "demo",
+        {"inp_ms": 80, "cls_ms": 50, "tbt_ms": 20},
+    )
     metrics_path = tmp_path / "audits" / "performance"
-    assert any(p.suffix == ".json" for p in metrics_path.glob("*.json"))
+    json_files = list(metrics_path.glob("*.json"))
+    assert any(p.suffix == ".json" for p in json_files)
+    if json_files:
+        data = json.loads(json_files[0].read_text())
+        assert "inp_ms" in data and "tbt_ms" in data and "cls_ms" in data
 
 
 @pytest.mark.asyncio

@@ -7,7 +7,7 @@ import os
 import time
 import resource
 from contextlib import contextmanager
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import yaml
 
@@ -47,6 +47,18 @@ class PerformanceMonitor:
             compliant = False
             violations.append({"metric": "inp_ms", "message": "INP exceeds budget"})
 
+        if "cls_ms" in metrics and metrics["cls_ms"] > chat_budget.get(
+            "max_cls_ms", float("inf")
+        ):
+            compliant = False
+            violations.append({"metric": "cls_ms", "message": "CLS exceeds budget"})
+
+        if "tbt_ms" in metrics and metrics["tbt_ms"] > chat_budget.get(
+            "max_tbt_ms", float("inf")
+        ):
+            compliant = False
+            violations.append({"metric": "tbt_ms", "message": "TBT exceeds budget"})
+
         test_budget = self.budgets.get("test_suite", {})
         if (
             "runtime_ms" in metrics
@@ -68,8 +80,10 @@ class PerformanceMonitor:
         return {"compliant": compliant, "violations": violations}
 
     @contextmanager
-    def monitor(self, iteration: str) -> None:
-        """Collect runtime and memory metrics for an iteration."""
+    def monitor(
+        self, iteration: str, ui_metrics: Optional[Dict[str, float]] = None
+    ) -> None:
+        """Collect runtime, memory and UI metrics for an iteration."""
 
         start_time = time.perf_counter()
         start_mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
@@ -82,6 +96,8 @@ class PerformanceMonitor:
                 "runtime_ms": (end_time - start_time) * 1000,
                 "memory_mb": max(0.0, end_mem - start_mem),
             }
+            if ui_metrics:
+                metrics.update(ui_metrics)
             result = self.check_budget_compliance(metrics)
             metrics.update(result)
             self.update_iteration_metrics(iteration, metrics)

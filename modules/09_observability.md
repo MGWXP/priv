@@ -1,12 +1,12 @@
 ---
 name: "Module_Observability"
-version: "1.1"
-description: "Monitors runtime and memory metrics and validates them against the execution budget."
+version: "1.2"
+description: "Monitors runtime, memory, and UI latency metrics and validates them against the execution budget."
 inputs: ["audits/performance/", "src/"]
 outputs: ["audits/performance/"]
 dependencies: []
 author: "AI"
-last_updated: "2025-05-24"
+last_updated: "2025-05-25"
 status: "active"
 ---
 
@@ -16,10 +16,8 @@ status: "active"
 
 Provide observability into AI task performance, recording metrics such as runtime, memory usage, and responsiveness.
 
-The module now exposes a context manager that measures runtime and memory for each
-workflow iteration and checks the results against the limits defined in
-`execution-budget.yaml`.
+The module exposes a context manager that measures runtime, memory, and optional UI latency metrics for each workflow iteration. Metrics are automatically checked against the limits defined in `execution-budget.yaml`.
 
 ## Prompt
 
-Collect metrics during task execution and update the dashboards under `audits/performance/`. Alert when thresholds defined in `execution-budget.yaml` are exceeded.
+Collect metrics during task execution and update the dashboards under `audits/performance/`. Alert when thresholds defined in `execution-budget.yaml` are exceeded. When violations occur, the PerformanceOptimization chain can be triggered to refactor code and run regression tests automatically.

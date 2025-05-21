@@ -57,10 +57,10 @@ modules:
 
   - name: Module_Observability
     file: modules/09_observability.md
-    version: 1.0
-    description: Monitors and reports performance metrics for Codex Web-Native operations.
+    version: 1.2
+    description: Monitors runtime, memory, and UI latency metrics for Codex Web-Native operations.
     status: active
-    last_update: "2025-05-20"
+    last_update: "2025-05-25"
     marker: chore
 
   - name: Module_RegressionSuite
