@@ -40,7 +40,7 @@ modules:
     marker: chore
 
   - name: Module_ParallelAsync
-    file: ../modules/03_parallel-async.md
+    file: modules/03_parallel-async.md
     version: 1.0
     description: Manages parallel task execution and asynchronous offloading in Codex Web-Native environment.
     status: active
@@ -48,7 +48,7 @@ modules:
     marker: chore
 
   - name: Module_Observability
-    file: ../modules/09_observability.md
+    file: modules/09_observability.md
     version: 1.0
     description: Monitors and reports performance metrics for Codex Web-Native operations.
     status: active
@@ -56,7 +56,7 @@ modules:
     marker: chore
 
   - name: Module_RegressionSuite
-    file: ../modules/10_regression-suite.md
+    file: modules/10_regression-suite.md
     version: 1.0
     description: Manages comprehensive regression testing to prevent performance and functional regressions.
     status: active
@@ -64,7 +64,7 @@ modules:
     marker: test
 
   - name: Module_DiffAnalyzerV2
-    file: ../modules/11_diff-analyzer.md
+    file: modules/11_diff-analyzer.md
     version: 1.0
     description: Analyzes code changes to ensure coherence marker compliance and perform semantic diff verification.
     status: active
