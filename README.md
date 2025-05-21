@@ -26,6 +26,9 @@ This repository implements a modern application development workflow optimized f
 | v1.2 | Orchestrator refactor and bug fixes |
 | v1.3 | Async workflow scheduler |
 
+For details on using commit markers and version tags to track these milestones,
+see [Progress Checkpointing Guidelines](docs/progress-checkpointing.md).
+
 ## Getting Started
 
 1. Review `AGENTS.md` to understand the AI orchestration guidelines
