@@ -120,7 +120,9 @@ To analyze semantic diffs and verify coherence marker compliance:
 
 ### Monitoring Performance
 
-To update performance metrics and generate dashboards:
+The observability module runs automatically during each chain execution,
+capturing runtime and memory metrics. Use the CLI to update metrics and
+generate dashboards:
 
 ```bash
 # Update metrics for the current iteration
