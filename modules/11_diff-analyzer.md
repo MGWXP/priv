@@ -7,6 +7,7 @@ outputs: ["audits/diffs/"]
 dependencies: []
 author: "AI"
 last_updated: "2025-05-21"
+marker: chore
 status: "active"
 ---
 

@@ -36,7 +36,7 @@ modules:
     version: 1.0
     description: Analyzes code changes to evaluate impact, quality, and potential issues.
     status: active
-    last_update: "2025-05-20"
+    last_update: "2025-05-21"
     marker: chore
 
   - name: Module_BugFixer
@@ -73,10 +73,10 @@ modules:
 
   - name: Module_DiffAnalyzerV2
     file: modules/11_diff-analyzer.md
-    version: 1.0
+    version: 1.1
     description: Analyzes code changes to ensure coherence marker compliance and perform semantic diff verification.
     status: active
-    last_update: "2025-05-20"
+    last_update: "2025-05-21"
     marker: chore
 
 dependencies:

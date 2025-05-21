@@ -41,3 +41,7 @@
 - Expanded Module_Observability to v1.2 with UI latency metrics and budget alerts.
 - Updated orchestrator to pass INP, CLS, and TBT values from the execution context.
 - Tests and documentation updated to reflect new observability capabilities.
+
+## 2025-05-26
+- Added marker fields to all module front-matter for CI compatibility.
+- Synced Module_DiffAnalyzerV2 metadata in prompt registry.
