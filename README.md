@@ -19,6 +19,7 @@ This repository implements a modern application development workflow optimized f
 3. Check `prompt-registry.yaml` for the index of all prompt modules
 4. Run tests with `pytest` to verify everything is working
 5. Ensure the `ai_workflow` package is installed or available on your `PYTHONPATH`.
+6. Set the `SECRET_KEY` environment variable before running the application.
 
 ## Development Workflow
 

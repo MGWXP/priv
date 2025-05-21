@@ -9,9 +9,16 @@ from flask import Flask, jsonify
 def create_app(test_config=None):
     """Create and configure the Flask application."""
 
+    secret_key = os.environ.get("SECRET_KEY")
+    if test_config is not None:
+        secret_key = test_config.get("SECRET_KEY", secret_key)
+
+    if not secret_key:
+        raise RuntimeError("SECRET_KEY must be provided via environment or test config")
+
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY=os.environ.get("SECRET_KEY", "dev-key-change-in-production"),
+        SECRET_KEY=secret_key,
         DATABASE=os.path.join(app.instance_path, "database.sqlite"),
     )
 
