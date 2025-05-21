@@ -87,20 +87,26 @@ def validate_prompt_file(path: Path, registry_modules: dict[str, Any]) -> list[s
     return errors
 
 
-def validate_registry_entries(registry_data: dict[str, Any], repo_root: Path) -> tuple[dict[str, Any], list[str]]:
+def validate_registry_entries(
+    registry_data: dict[str, Any], repo_root: Path
+) -> tuple[dict[str, Any], list[str]]:
     """Validate registry modules and return mapping of name to data."""
     errors: list[str] = []
     modules: dict[str, Any] = {}
     for item in registry_data.get("modules", []):
         for field in REQUIRED_REGISTRY_FIELDS:
             if field not in item:
-                errors.append(f"Registry module '{item.get('name')}' missing field '{field}'")
+                errors.append(
+                    f"Registry module '{item.get('name')}' missing field '{field}'"
+                )
         name = item.get("name")
         if name:
             modules[name] = item
             file_path = repo_root / item.get("file", "")
             if not file_path.exists():
-                errors.append(f"Registry file not found for module '{name}': {file_path}")
+                errors.append(
+                    f"Registry file not found for module '{name}': {file_path}"
+                )
     return modules, errors
 
 
