@@ -22,7 +22,5 @@ fi
 # Install requirements
 pip install -r requirements.txt
 
-# Run the application
-export FLASK_APP=src.main
-export FLASK_ENV=development
-flask run
+# Run the application directly
+python main.py

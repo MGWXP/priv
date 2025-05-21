@@ -18,6 +18,7 @@ This repository implements a modern application development workflow optimized f
 2. Explore the `prompt-library/` to see available AI instruction modules
 3. Check `prompt-registry.yaml` for the index of all prompt modules
 4. Run tests with `pytest` to verify everything is working
+5. Ensure the `ai_workflow` package is installed or available on your `PYTHONPATH`.
 
 ## Development Workflow
 
@@ -92,36 +93,18 @@ To visualize the relationships between modules and their input/output contexts:
 /  (Project Root)
 ├── AGENTS.md                   # Project-level AI orchestration guidelines
 ├── README.md                   # This file - human-readable project overview
-├── prompt-library/             # Modular prompt definitions
-│   ├── module_taskA.v1.md      # Feature implementation prompt
-│   ├── module_test_generator.v1.md # Test generation prompt
-│   └── ... (additional prompt modules)
-├── modules/                    # Core modules for parallel execution and governance
-│   ├── 03_parallel-async.md    # Parallel task execution module
-│   ├── 09_observability.md     # Performance monitoring module
-│   ├── 10_regression-suite.md  # Regression testing module
-│   └── 11_diff-analyzer.md     # Semantic diff analysis module
-├── prompt-registry.yaml        # Index of prompt modules, versions, and metadata
-├── prompt-chains.graphml       # Visual representation of module relationships
-├── execution-budget.yaml       # Resource limits and performance targets
-├── workflows/                  # CI/CD and governance workflows
-│   ├── test-and-lint.yml       # GitHub Actions workflow for tests/lint
-│   └── audit-checks.yml        # Workflow to verify prompt schema, diffs, etc.
-├── audits/                     # Logs, diffs, and performance audit data
-│   ├── diffs/                  # Recorded semantic diffs for each iteration
-│   ├── performance/            # Performance metrics and benchmarks
-│   ├── dashboards/             # Markdown-based visualization dashboards
-│   ├── analysis/               # Semantic diff analysis reports
-│   └── history.log.md          # Chronological log of AI agent actions/outputs
-├── ai_workflow/                # AI workflow orchestration system
-│   ├── orchestrator.py         # Workflow orchestration
-│   ├── context_graphs.py       # Context graph management
-│   ├── semantic_diff.py        # Semantic diff analysis
-│   └── performance_monitor.py  # Performance monitoring
 ├── ai_workflow_cli.py          # CLI utility for AI workflow
-├── tests/                      # Test suite
-├── src/                        # Source code
-└── docs/                       # Additional documentation
+├── execution-budget.yaml       # Resource limits and performance targets
+├── prompt-chains.graphml       # Visual representation of prompt relationships
+├── prompt-registry.yaml        # Index of prompt modules, versions, and metadata
+├── module_taskA.v1.md          # Example prompt module
+├── module_test_generator.v1.md # Example prompt module
+├── scripts/                    # Utility scripts
+├── tools/                      # NLU tools and helpers
+├── docs/                       # Documentation
+├── run.sh                      # Launch script
+├── main.py                     # Application entry point
+└── (additional files and stubs)
 ```
 
 ## Contributing
