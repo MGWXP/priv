@@ -121,8 +121,10 @@ To analyze semantic diffs and verify coherence marker compliance:
 ### Monitoring Performance
 
 The observability module runs automatically during each chain execution,
-capturing runtime and memory metrics. Use the CLI to update metrics and
-generate dashboards:
+capturing runtime, memory, and optional UI latency metrics. When metrics exceed
+the limits defined in `execution-budget.yaml`, the PerformanceOptimization chain
+can be invoked to refactor and test affected code automatically. Use the CLI to
+update metrics and generate dashboards:
 
 ```bash
 # Update metrics for the current iteration

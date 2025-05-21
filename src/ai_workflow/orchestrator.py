@@ -67,7 +67,12 @@ class WorkflowOrchestrator:
         """
 
         iteration = f"{chain_name}_{int(time.time())}"
-        with self._monitor.monitor(iteration):
+        ui_metrics = {
+            k: context[k]
+            for k in ("inp_ms", "cls_ms", "tbt_ms")
+            if context and k in context
+        }
+        with self._monitor.monitor(iteration, ui_metrics or None):
             return self._execute_chain_internal(chain_name, context)
 
     def _execute_chain_internal(
@@ -163,7 +168,12 @@ class WorkflowOrchestrator:
     ) -> Dict[str, Any]:
         """Asynchronously execute a prompt chain."""
         iteration = f"{chain_name}_{int(time.time())}"
-        with self._monitor.monitor(iteration):
+        ui_metrics = {
+            k: context[k]
+            for k in ("inp_ms", "cls_ms", "tbt_ms")
+            if context and k in context
+        }
+        with self._monitor.monitor(iteration, ui_metrics or None):
             return await asyncio.to_thread(
                 self._execute_chain_internal, chain_name, context
             )

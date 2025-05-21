@@ -36,3 +36,8 @@
 - Upgraded Module_Observability to v1.1 with automatic runtime and memory tracking.
 - Orchestrator now records metrics for each chain execution.
 - Updated README and module documentation accordingly.
+
+## 2025-05-25
+- Expanded Module_Observability to v1.2 with UI latency metrics and budget alerts.
+- Updated orchestrator to pass INP, CLS, and TBT values from the execution context.
+- Tests and documentation updated to reflect new observability capabilities.
