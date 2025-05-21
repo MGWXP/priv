@@ -136,3 +136,4 @@ To contribute to this project:
 3. Ensure all tests pass before submitting changes
 4. Update the audit trail with meaningful diffs and logs
 5. Follow semantic linking rules when creating new components
+6. Prefix commit messages with a coherence marker like `[feat]`, `[fix]`, or `[docs]`
