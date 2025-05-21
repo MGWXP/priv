@@ -1,0 +1,58 @@
+# Execution Budget for Codex Web-Native Repository
+
+# This file defines resource limits and performance targets for all AI tasks
+# Used by the CI system and scheduler to enforce performance constraints
+
+version: "1.0"
+last_updated: "2025-05-20"
+
+# Task execution limits
+task_limits:
+  max_runtime_minutes: 60
+  watchdog_cancel_minutes: 55
+  max_memory_mb: 4096
+  max_parallel_tasks: 3
+  auto_backoff: true
+
+# Performance budgets
+performance_budgets:
+  chat_ui:
+    max_inp_ms: 200  # Input delay must be under 200ms
+    max_cls_ms: 100  # Cumulative Layout Shift delay
+    max_tbt_ms: 150  # Total Blocking Time
+  
+  test_suite:
+    max_runtime_seconds: 300
+    max_memory_mb: 2048
+    coverage_threshold_percent: 80
+  
+  build_process:
+    max_runtime_seconds: 180
+    max_artifact_size_mb: 50
+
+# Parallel task configurations
+parallel_config:
+  isolation_strategy: "file-level"  # Options: file-level, module-level, branch-level
+  merge_strategy: "semantic-diff"   # Options: semantic-diff, auto-resolve, human-review
+  conflict_resolution: "human-review"  # How to handle merge conflicts
+
+# Async offloading settings
+async_config:
+  progress_reporting: "sidebar-only"
+  notification_threshold_minutes: 5
+  auto_save_interval_minutes: 10
+
+# Coherence marker enforcement
+coherence_markers:
+  required: true
+  valid_markers:
+    - feat      # New feature
+    - fix       # Bug fix
+    - docs      # Documentation changes
+    - style     # Formatting, white-space, etc.
+    - refactor  # Code change that neither fixes a bug nor adds a feature
+    - perf      # Performance improvement
+    - test      # Adding or correcting tests
+    - chore     # Changes to the build process or auxiliary tools
+  require_description: true
+  verify_diff_matches_intent: true

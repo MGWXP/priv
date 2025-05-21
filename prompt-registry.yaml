@@ -1,0 +1,144 @@
+modules:
+  - name: Module_TaskA
+    file: module_taskA.v1.md
+    version: 1.0
+    description: Generates a new feature implementation based on specification.
+    status: active
+    last_update: "2025-05-20"
+    marker: feat
+    
+  - name: Module_TestGenerator
+    file: module_test_generator.v1.md
+    version: 1.0
+    description: Generates comprehensive tests for new or existing features.
+    status: active
+    last_update: "2025-05-20"
+    marker: test
+    
+  - name: Module_Refactor
+    file: module_refactor.v1.md
+    version: 1.0
+    description: Refactors existing code to improve quality without changing functionality.
+    status: active
+    last_update: "2025-05-20"
+    marker: refactor
+    
+  - name: Module_DocWriter
+    file: module_doc_writer.v1.md
+    version: 1.0
+    description: Creates or updates documentation for code, features, and APIs.
+    status: active
+    last_update: "2025-05-20"
+    marker: docs
+    
+  - name: Module_DiffAnalyzer
+    file: module_diff_analyzer.v1.md
+    version: 1.0
+    description: Analyzes code changes to evaluate impact, quality, and potential issues.
+    status: active
+    last_update: "2025-05-20"
+    marker: chore
+
+  - name: Module_ParallelAsync
+    file: ../modules/03_parallel-async.md
+    version: 1.0
+    description: Manages parallel task execution and asynchronous offloading in Codex Web-Native environment.
+    status: active
+    last_update: "2025-05-20"
+    marker: chore
+
+  - name: Module_Observability
+    file: ../modules/09_observability.md
+    version: 1.0
+    description: Monitors and reports performance metrics for Codex Web-Native operations.
+    status: active
+    last_update: "2025-05-20"
+    marker: chore
+
+  - name: Module_RegressionSuite
+    file: ../modules/10_regression-suite.md
+    version: 1.0
+    description: Manages comprehensive regression testing to prevent performance and functional regressions.
+    status: active
+    last_update: "2025-05-20"
+    marker: test
+
+  - name: Module_DiffAnalyzerV2
+    file: ../modules/11_diff-analyzer.md
+    version: 1.0
+    description: Analyzes code changes to ensure coherence marker compliance and perform semantic diff verification.
+    status: active
+    last_update: "2025-05-20"
+    marker: chore
+
+dependencies:
+  # Define relationships or chains between modules
+  - chain: "FeatureDevCycle"
+    sequence: ["Module_TaskA", "Module_TestGenerator", "Module_DocWriter", "Module_DiffAnalyzer"]
+    description: "Standard chain to develop a feature, write tests, document, and analyze changes."
+    
+  - chain: "RefactorCycle"
+    sequence: ["Module_Refactor", "Module_TestGenerator", "Module_DiffAnalyzer"]
+    description: "Workflow for refactoring existing code, verifying tests, and analyzing changes."
+    
+  - chain: "DocumentationUpdate"
+    sequence: ["Module_DocWriter", "Module_DiffAnalyzer"]
+    description: "Simple chain for updating documentation and reviewing changes."
+
+  - chain: "ParallelFeatureDevCycle"
+    sequence: ["Module_ParallelAsync", "Module_TaskA", "Module_TestGenerator", "Module_DocWriter", "Module_DiffAnalyzerV2"]
+    description: "Parallel execution of feature development with enhanced diff analysis."
+
+  - chain: "PerformanceOptimization"
+    sequence: ["Module_Observability", "Module_Refactor", "Module_RegressionSuite", "Module_DiffAnalyzerV2"]
+    description: "Workflow for identifying and implementing performance improvements."
+
+categories:
+  - name: "feature-development"
+    modules: ["Module_TaskA", "Module_TestGenerator"]
+    description: "Modules for implementing new features"
+    
+  - name: "maintenance"
+    modules: ["Module_Refactor", "Module_DiffAnalyzer", "Module_DiffAnalyzerV2"]
+    description: "Modules for maintaining and improving existing code"
+    
+  - name: "documentation"
+    modules: ["Module_DocWriter"]
+    description: "Modules for creating and updating documentation"
+
+  - name: "infrastructure"
+    modules: ["Module_ParallelAsync", "Module_Observability", "Module_RegressionSuite"]
+    description: "Modules for managing system infrastructure and performance"
+
+markers:
+  - name: "feat"
+    description: "New feature or functionality"
+    modules: ["Module_TaskA"]
+
+  - name: "fix"
+    description: "Bug fix"
+    modules: ["Module_TaskA"]
+
+  - name: "refactor"
+    description: "Code restructuring without behavior change"
+    modules: ["Module_Refactor"]
+
+  - name: "docs"
+    description: "Documentation changes only"
+    modules: ["Module_DocWriter"]
+
+  - name: "test"
+    description: "Adding or modifying tests"
+    modules: ["Module_TestGenerator", "Module_RegressionSuite"]
+
+  - name: "chore"
+    description: "Maintenance tasks, build changes"
+    modules: ["Module_ParallelAsync", "Module_Observability", "Module_DiffAnalyzer", "Module_DiffAnalyzerV2"]
+
+  - name: "style"
+    description: "Formatting, whitespace changes"
+    modules: []
+
+  - name: "perf"
+    description: "Performance improvements"
+    modules: ["Module_Refactor"]

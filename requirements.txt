@@ -1,0 +1,19 @@
+# Application dependencies
+flask==2.3.3
+pyjwt==2.8.0
+bcrypt==4.0.1
+email-validator==2.1.0
+python-dotenv==1.0.0
+flask-cors==4.0.0
+networkx==3.1
+matplotlib==3.7.2
+pyyaml==6.0.1
+
+# Testing dependencies
+pytest==7.4.0
+pytest-cov==4.1.0
+pytest-flask==1.2.0
+
+# Linting and formatting
+black==23.7.0
+flake8==6.1.0
