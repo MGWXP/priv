@@ -21,6 +21,21 @@ This repository implements a modern application development workflow optimized f
 4. Run tests with `pytest` to verify everything is working
 5. Ensure the `ai_workflow` package is installed or available on your `PYTHONPATH`.
 6. Set the `SECRET_KEY` environment variable before running the application.
+7. Configure integration credentials using environment variables or a `.env` file.
+
+### Environment Configuration
+
+The `src/config.py` module loads environment variables for external services. You
+can create a `.env` file in the project root containing keys such as:
+
+```bash
+NOTION_API_KEY=your-notion-key
+GITHUB_TOKEN=your-github-token
+SLACK_TOKEN=your-slack-token
+DATABASE_URL=sqlite:///app.db
+```
+
+These values are automatically loaded when the application starts.
 
 ## Development Workflow
 
