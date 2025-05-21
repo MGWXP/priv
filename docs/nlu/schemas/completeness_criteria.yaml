@@ -1,0 +1,89 @@
+# Documentation Completeness Criteria Schema
+
+# This schema defines criteria for determining if documentation is complete
+# It's used to validate the repository documentation and identify gaps
+
+# Core document completeness criteria
+core_criteria:
+  - name: README
+    path: README.md
+    required: true
+    must_contain:
+      - overview
+      - purpose
+      - layers
+  
+  - name: AGENTS
+    path: AGENTS.md
+    required: true
+    must_contain:
+      - standards
+      - roles
+      - constraints
+
+  - name: ExecutionBudget
+    path: execution-budget.yaml
+    required: true
+    schema_fields:
+      - version
+      - task_limits
+      - performance_budgets
+
+# Prompt modules completeness criteria
+prompt_modules:
+  front_matter_fields:
+    required:
+      - name
+      - version
+      - marker
+      - description
+      - inputs
+      - outputs
+      - status
+    recommended:
+      - dependencies
+      - author
+      - last_updated
+  
+  sections:
+    required:
+      - purpose
+      - prompt
+    recommended:
+      - example
+
+# Code completeness criteria
+code:
+  python:
+    required:
+      - docstrings
+      - type_hints
+    recommended:
+      - tests
+      - examples
+  
+  javascript:
+    required:
+      - jsdoc
+    recommended:
+      - tests
+      - typescript
+
+# Coverage thresholds
+coverage_thresholds:
+  documentation:
+    src: 80  # 80% of source files should have documentation
+    modules: 100  # 100% of prompt modules should have complete documentation
+  
+  tests:
+    src: 80  # 80% of source files should have tests
+    
+  relationships:
+    min_references: 1  # Each document should reference at least 1 other document
+    max_orphans: 5     # Maximum number of orphaned documents allowed
+
+# Reporting configuration
+reporting:
+  highlight_critical: true
+  include_recommendations: true
+  generate_metrics: true

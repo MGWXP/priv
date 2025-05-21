@@ -1,0 +1,85 @@
+# NLU Processor Configuration Schema
+
+# This schema defines the configuration for the NLU document processor
+# It specifies how to extract metadata from different file types
+# and how to build relationships between documents
+
+# File patterns to process (extensions)
+file_patterns:
+  - .md
+  - .py
+  - .yaml
+  - .yml
+  - .json
+  - .js
+  - .ts
+
+# Regular expression rules for extracting metadata from different file types
+extraction_rules:
+  md:
+    front_matter: '---\n(.*?)\n---'
+    headers: '^(#{1,6})\s+(.*?)$'
+  py:
+    docstring: '"""(.*?)"""'
+    class: 'class\s+(\w+)'
+    function: 'def\s+(\w+)'
+  js:
+    docstring: '/\*\*(.*?)\*/'
+    class: 'class\s+(\w+)'
+    function: 'function\s+(\w+)'
+  ts:
+    docstring: '/\*\*(.*?)\*/'
+    class: 'class\s+(\w+)'
+    function: 'function\s+(\w+)'
+  yaml:
+    # No specific rules, handled generically
+  yml:
+    # No specific rules, handled generically
+  json:
+    # No specific rules, handled generically
+
+# Types of relationships to extract and track
+relationship_types:
+  - references      # Document A references Document B
+  - referenced_by   # Document A is referenced by Document B
+  - implements      # Document A implements specification in Document B
+  - implemented_by  # Document A is implemented by Document B
+  - tests           # Document A tests functionality in Document B
+  - tested_by       # Document A is tested by Document B
+  - documents       # Document A documents functionality in Document B
+  - documented_by   # Document A is documented by Document B
+  - depends_on      # Document A depends on Document B
+
+# Taxonomy layers for classification
+taxonomy_layers:
+  - name: config
+    paths:
+      - README.md
+      - AGENTS.md
+      - execution-budget.yaml
+      
+  - name: prompts
+    paths:
+      - prompt-library/
+      - modules/
+      
+  - name: code
+    paths:
+      - src/
+      - tests/
+      
+  - name: docs
+    paths:
+      - docs/
+      
+  - name: audit
+    paths:
+      - audits/
+      - .github/workflows/
+
+# Embedding configuration
+embedding:
+  model: text-embedding-3-large
+  dimensions: 384
+  batch_size: 10
+  max_length: 8192
