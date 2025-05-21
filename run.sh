@@ -23,4 +23,4 @@ fi
 pip install -r requirements.txt
 
 # Run the application directly
-python main.py
+python src/app.py
