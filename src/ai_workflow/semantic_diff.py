@@ -13,6 +13,15 @@ import yaml
 class SemanticDiffAnalyzer:
     """Perform simple semantic diff analysis."""
 
+    def __init__(self) -> None:
+        """Load configuration used for diff analysis."""
+
+        with open("execution-budget.yaml", "r", encoding="utf-8") as f:
+            budget = yaml.safe_load(f)
+        self.valid_markers = budget.get("coherence_markers", {}).get(
+            "valid_markers", []
+        )
+
     def analyze_file_diff(
         self, old_content: str, new_content: str, file_path: str
     ) -> Dict[str, Any]:
@@ -51,11 +60,7 @@ class SemanticDiffAnalyzer:
     ) -> Dict[str, Any]:
         """Verify that a given coherence marker is valid."""
 
-        with open("execution-budget.yaml", "r", encoding="utf-8") as f:
-            budget = yaml.safe_load(f)
-
-        valid_markers = budget.get("coherence_markers", {}).get("valid_markers", [])
-        if marker not in valid_markers:
+        if marker not in self.valid_markers:
             return {"compliant": False, "reason": "Invalid coherence marker"}
 
         return {"compliant": True}

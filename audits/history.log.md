@@ -8,3 +8,7 @@
 - Added `IntegrationsConfig` utility for server environment variables.
 - Updated README with environment configuration instructions.
 - Introduced `PrivDashboardPreview` React component for dashboard previews.
+
+## 2025-05-21
+- Cached valid markers during diff analyzer initialization
+- Batched line writing in context graph export for improved I/O

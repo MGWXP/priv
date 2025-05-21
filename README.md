@@ -12,6 +12,7 @@ This repository implements a modern application development workflow optimized f
 - Comprehensive testing and performance tracking
 - AI-friendly project structure with clear guidance
 - Lightweight workflow orchestration utilities (CLI-driven)
+- Optimized diff analyzer initialization and context graph export
 
 ## Getting Started
 

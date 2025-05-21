@@ -34,9 +34,9 @@ class ContextGraphManager:
         path = output_path or os.path.join("audits", "dashboards", "context_graph.md")
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
-            f.write("# Context Graph\n\n")
-            for key, value in self.graph.items():
-                f.write(f"- **{key}**: {value}\n")
+            lines = ["# Context Graph\n", "\n"]
+            lines.extend(f"- **{key}**: {value}\n" for key, value in self.graph.items())
+            f.writelines(lines)
         return path
 
     def generate_html_visualization(self, output_path: str | None = None) -> str:
