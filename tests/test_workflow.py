@@ -61,6 +61,19 @@ def test_performance_monitor(tmp_path):
         assert os.path.exists(p)
 
 
+def test_chain_generates_metrics(tmp_path, monkeypatch):
+    import ai_workflow.orchestrator as orch_mod
+
+    def _mon_factory():
+        return PerformanceMonitor(metrics_dir=tmp_path / "audits" / "performance")
+
+    monkeypatch.setattr(orch_mod, "PerformanceMonitor", _mon_factory)
+    orch = WorkflowOrchestrator()
+    orch.execute_chain("demo")
+    metrics_path = tmp_path / "audits" / "performance"
+    assert any(p.suffix == ".json" for p in metrics_path.glob("*.json"))
+
+
 @pytest.mark.asyncio
 async def test_async_parallel_chain(tmp_path):
     orch = WorkflowOrchestrator()

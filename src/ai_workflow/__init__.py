@@ -8,6 +8,7 @@ from .context_graphs import ContextGraphManager
 from .semantic_diff import SemanticDiffAnalyzer
 from .scheduler import WorkflowScheduler
 from .diff_analyzer_v2 import DiffAnalyzerV2
+from .performance_monitor import PerformanceMonitor
 
 __all__ = [
     "WorkflowOrchestrator",
@@ -15,4 +16,5 @@ __all__ = [
     "SemanticDiffAnalyzer",
     "WorkflowScheduler",
     "DiffAnalyzerV2",
+    "PerformanceMonitor",
 ]

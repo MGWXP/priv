@@ -31,3 +31,8 @@
 ## 2025-05-23
 - Added dedicated `Module_BugFixer` for handling `[fix]` tasks.
 - Introduced `BugFixCycle` chain and updated prompt registry and README.
+
+## 2025-05-24
+- Upgraded Module_Observability to v1.1 with automatic runtime and memory tracking.
+- Orchestrator now records metrics for each chain execution.
+- Updated README and module documentation accordingly.

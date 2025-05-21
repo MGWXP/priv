@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import asyncio
+import time
 from typing import Any, Dict, List
 
 import yaml
@@ -12,6 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 from .scheduler import WorkflowScheduler
 
 from .context_graphs import ContextGraphManager
+from .performance_monitor import PerformanceMonitor
 
 
 class WorkflowOrchestrator:
@@ -44,6 +46,7 @@ class WorkflowOrchestrator:
             self._max_parallel = 3
 
         self._scheduler = WorkflowScheduler(self._max_parallel)
+        self._monitor = PerformanceMonitor()
 
     def execute_chain(
         self, chain_name: str, context: Dict[str, Any] | None = None
@@ -62,6 +65,15 @@ class WorkflowOrchestrator:
         dict
             Execution metadata.
         """
+
+        iteration = f"{chain_name}_{int(time.time())}"
+        with self._monitor.monitor(iteration):
+            return self._execute_chain_internal(chain_name, context)
+
+    def _execute_chain_internal(
+        self, chain_name: str, context: Dict[str, Any] | None = None
+    ) -> Dict[str, Any]:
+        """Internal implementation for executing a chain."""
 
         chain_def = None
         for chain in self._registry.get("dependencies", []):
@@ -150,49 +162,11 @@ class WorkflowOrchestrator:
         self, chain_name: str, context: Dict[str, Any] | None = None
     ) -> Dict[str, Any]:
         """Asynchronously execute a prompt chain."""
-
-        chain_def = None
-        for chain in self._registry.get("dependencies", []):
-            if chain.get("chain") == chain_name:
-                chain_def = chain
-                break
-
-        if not chain_def:
-            data = {
-                "chain": chain_name,
-                "context": context or {},
-                "status": "executed",
-            }
-            self._graph_manager.update_from_runtime(data)
-            return data
-
-        sequence = chain_def.get("sequence", [])
-        executed: List[Dict[str, Any]] = []
-        i = 0
-        while i < len(sequence):
-            step = sequence[i]
-            if isinstance(step, dict) and "Module_ParallelAsync" in step:
-                modules = step["Module_ParallelAsync"].get("run_parallel", [])
-                executed.extend(await self._run_parallel_async(modules, context))
-                i += 1
-                continue
-
-            if step == "Module_ParallelAsync":
-                modules = sequence[i + 1 : i + 1 + self._max_parallel]
-                executed.extend(await self._run_parallel_async(modules, context))
-                i += 1 + len(modules)
-                continue
-
-            executed.append(await self.execute_module_async(step, context))
-            i += 1
-
-        data = {
-            "chain": chain_name,
-            "executed": [m.get("module") for m in executed],
-            "status": "completed",
-        }
-        self._graph_manager.update_from_runtime(data)
-        return data
+        iteration = f"{chain_name}_{int(time.time())}"
+        with self._monitor.monitor(iteration):
+            return await asyncio.to_thread(
+                self._execute_chain_internal, chain_name, context
+            )
 
     def export_context_graph(self, output_dir: str = "audits/dashboards") -> str:
         """Export the context graph and return the file path."""
