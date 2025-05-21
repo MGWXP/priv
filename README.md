@@ -102,6 +102,14 @@ The workflow orchestrator reads `execution-budget.yaml` to determine the
 maximum number of parallel threads and spawns them using a lightweight
 scheduler.
 
+### Bug Fix Workflow
+
+Use the BugFixCycle chain to reproduce a bug, apply a fix, and review the change:
+
+```bash
+./scripts/ai_workflow_cli.py execute-chain BugFixCycle --context '{"issue": "BUG-123"}'
+```
+
 ### Analyzing Diffs
 
 To analyze semantic diffs and verify coherence marker compliance:

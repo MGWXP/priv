@@ -39,6 +39,14 @@ modules:
     last_update: "2025-05-20"
     marker: chore
 
+  - name: Module_BugFixer
+    file: prompt-library/module_bug_fixer.v1.md
+    version: 1.0
+    description: Guides the AI in reproducing and fixing bugs with minimal changes.
+    status: active
+    last_update: "2025-05-21"
+    marker: fix
+
   - name: Module_ParallelAsync
     file: modules/03_parallel-async.md
     version: 1.0
@@ -93,13 +101,17 @@ dependencies:
     sequence: ["Module_Observability", "Module_Refactor", "Module_RegressionSuite", "Module_DiffAnalyzerV2"]
     description: "Workflow for identifying and implementing performance improvements."
 
+  - chain: "BugFixCycle"
+    sequence: ["Module_BugFixer", "Module_TestGenerator", "Module_DiffAnalyzer"]
+    description: "Reproduce a bug, apply a minimal fix, generate tests, and review the diff."
+
 categories:
   - name: "feature-development"
     modules: ["Module_TaskA", "Module_TestGenerator"]
     description: "Modules for implementing new features"
     
   - name: "maintenance"
-    modules: ["Module_Refactor", "Module_DiffAnalyzer", "Module_DiffAnalyzerV2"]
+    modules: ["Module_Refactor", "Module_DiffAnalyzer", "Module_DiffAnalyzerV2", "Module_BugFixer"]
     description: "Modules for maintaining and improving existing code"
     
   - name: "documentation"
@@ -117,7 +129,7 @@ markers:
 
   - name: "fix"
     description: "Bug fix"
-    modules: ["Module_TaskA"]
+    modules: ["Module_BugFixer"]
 
   - name: "refactor"
     description: "Code restructuring without behavior change"
