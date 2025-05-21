@@ -10,6 +10,7 @@ This repository implements a modern application development workflow optimized f
 - Transparent audit trail of all AI contributions
 - Parallel task support and semantic prompt chaining
 - Comprehensive testing and performance tracking
+- Automated runtime and memory monitoring via Observability
 - AI-friendly project structure with clear guidance
 - Lightweight workflow orchestration utilities (CLI-driven)
 - Optimized diff analyzer initialization and context graph export
@@ -91,7 +92,9 @@ To analyze semantic diffs and verify coherence marker compliance:
 
 ### Monitoring Performance
 
-To update performance metrics and generate dashboards:
+The Observability module automatically records runtime and memory statistics
+whenever prompt chains or modules run. You can also manually update metrics and
+generate dashboards:
 
 ```bash
 # Update metrics for the current iteration

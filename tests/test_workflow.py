@@ -11,8 +11,16 @@ def test_orchestrator_execute_chain(tmp_path):
     orch = WorkflowOrchestrator()
     result = orch.execute_chain("demo", {"foo": "bar"})
     assert result["status"] == "executed"
+    assert "performance_metrics" in result
     path = orch.export_context_graph(output_dir=tmp_path.as_posix())
     assert os.path.exists(path)
+
+
+def test_orchestrator_execute_module():
+    orch = WorkflowOrchestrator()
+    result = orch.execute_module("Module_TaskA")
+    assert result["status"] == "executed"
+    assert "performance_metrics" in result
 
 
 def test_context_graph_manager(tmp_path):

@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import os
+import time
 from typing import Any, Dict
 
 from .context_graphs import ContextGraphManager
+from .performance_monitor import PerformanceMonitor
 
 
 class WorkflowOrchestrator:
@@ -18,6 +20,7 @@ class WorkflowOrchestrator:
 
     def __init__(self) -> None:
         self._graph_manager = ContextGraphManager()
+        self._monitor = PerformanceMonitor()
 
     def execute_chain(
         self, chain_name: str, context: Dict[str, Any] | None = None
@@ -37,12 +40,20 @@ class WorkflowOrchestrator:
             Execution metadata.
         """
 
-        data: Dict[str, Any] = {
-            "chain": chain_name,
-            "context": context or {},
-            "status": "executed",
-        }
-        self._graph_manager.update_from_runtime(data)
+        with self._monitor.capture_metrics() as metrics:
+            data: Dict[str, Any] = {
+                "chain": chain_name,
+                "context": context or {},
+                "status": "executed",
+            }
+            self._graph_manager.update_from_runtime(data)
+
+        iteration = str(int(time.time()))
+        self._monitor.update_iteration_metrics(iteration, metrics)
+        data["performance_metrics"] = metrics
+        compliance = self._monitor.check_budget_compliance(metrics)
+        if not compliance["compliant"]:
+            data["performance_alerts"] = compliance["violations"]
         return data
 
     def execute_module(
@@ -50,12 +61,20 @@ class WorkflowOrchestrator:
     ) -> Dict[str, Any]:
         """Execute a single prompt module."""
 
-        data: Dict[str, Any] = {
-            "module": module_name,
-            "context": context or {},
-            "status": "executed",
-        }
-        self._graph_manager.update_from_runtime(data)
+        with self._monitor.capture_metrics() as metrics:
+            data: Dict[str, Any] = {
+                "module": module_name,
+                "context": context or {},
+                "status": "executed",
+            }
+            self._graph_manager.update_from_runtime(data)
+
+        iteration = str(int(time.time()))
+        self._monitor.update_iteration_metrics(iteration, metrics)
+        data["performance_metrics"] = metrics
+        compliance = self._monitor.check_budget_compliance(metrics)
+        if not compliance["compliant"]:
+            data["performance_alerts"] = compliance["violations"]
         return data
 
     def export_context_graph(self, output_dir: str = "audits/dashboards") -> str:
