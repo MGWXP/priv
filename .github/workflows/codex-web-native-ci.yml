@@ -1,0 +1,135 @@
+name: Codex Web-Native CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml markdown pytest pytest-cov flake8
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      
+      - name: Verify module consistency
+        run: |
+          python .github/scripts/verify_module_consistency.py
+          
+      - name: Validate prompt modules
+        run: |
+          python .github/scripts/validate_prompts.py
+          
+      - name: Validate Architecture Decision Records
+        run: |
+          python scripts/validate_adrs.py
+          
+      - name: Run linting
+        run: |
+          flake8 src/ tests/ ai_workflow/ --count --select=E9,F63,F7,F82 --show-source --statistics
+          
+  test:
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      
+      - name: Run tests with coverage
+        run: |
+          pytest --cov=src --cov=ai_workflow tests/
+          
+      - name: Generate coverage report
+        run: |
+          pytest --cov=src --cov=ai_workflow tests/ --cov-report=xml
+          
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage.xml
+          
+  semantic-diff:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: [validate, test]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml markdown
+          
+      - name: Generate diff report
+        run: |
+          mkdir -p audits/diffs
+          python -c "import os\nimport sys\nimport subprocess\nimport re\nimport yaml\nfrom datetime import datetime\n\n# Get PR number\npr_number = os.environ.get('GITHUB_REF', '').split('/')[-2]\n\n# Get diff for PR\ndiff_output = subprocess.check_output(\n    ['git', 'diff', '--name-status', 'origin/${{ github.base_ref }}..HEAD'],\n    universal_newlines=True\n)\n\n# Parse diff output\nchanges = {'added': [], 'modified': [], 'deleted': []}\nfor line in diff_output.strip().split('\\n'):\n    if not line:\n        continue\n    \n    status, file_path = line.split('\\t', 1)\n    if status.startswith('A'):\n        changes['added'].append(file_path)\n    elif status.startswith('M'):\n        changes['modified'].append(file_path)\n    elif status.startswith('D'):\n        changes['deleted'].append(file_path)\n\n# Generate report content\nnow = datetime.now()\nreport_content = f'# PR #{pr_number} Diff Report\\n\\n'\nreport_content += f'Generated: {now.isoformat()}\\n\\n'\n\nreport_content += '## Files Changed\\n\\n'\nreport_content += f'- Added: {len(changes[\"added\"])}\\n'\nreport_content += f'- Modified: {len(changes[\"modified\"])}\\n'\nreport_content += f'- Deleted: {len(changes[\"deleted\"])}\\n\\n'\n\nif changes['added']:\n    report_content += '### Added Files\\n\\n'\n    for file in changes['added']:\n        report_content += f'- {file}\\n'\n    report_content += '\\n'\n\nif changes['modified']:\n    report_content += '### Modified Files\\n\\n'\n    for file in changes['modified']:\n        report_content += f'- {file}\\n'\n    report_content += '\\n'\n\nif changes['deleted']:\n    report_content += '### Deleted Files\\n\\n'\n    for file in changes['deleted']:\n        report_content += f'- {file}\\n'\n    report_content += '\\n'\n\n# Get commit messages for this PR\ncommit_output = subprocess.check_output(\n    ['git', 'log', '--format=%s', 'origin/${{ github.base_ref }}..HEAD'],\n    universal_newlines=True\n)\n\nreport_content += '## Commit Messages\\n\\n'\nfor msg in commit_output.strip().split('\\n'):\n    if msg:\n        report_content += f'- {msg}\\n'\n\n# Find coherence markers in commit messages\nmarker_pattern = r'^\\[(\\w+)\\]'\nmarkers = []\nfor msg in commit_output.strip().split('\\n'):\n    if not msg:\n        continue\n    \n    match = re.match(marker_pattern, msg)\n    if match:\n        markers.append(match.group(1))\n\nif markers:\n    report_content += '\\n## Coherence Markers Used\\n\\n'\n    for marker in set(markers):\n        report_content += f'- [{marker}]\\n'\n\n# Save report\nreport_file = f'audits/diffs/pr_{pr_number}_diff.md'\nwith open(report_file, 'w') as f:\n    f.write(report_content)\n\nprint(f'Diff report generated: {report_file}')\n\n# Check for changes to protected files\nprotected_files = [\n    'LICENSE', 'LICENSE.md', 'LICENSE.txt', 'COPYING',\n    '.env', '.env.local', 'secrets.yaml', 'credentials.json'\n]\n\nerror_count = 0\nfor file_list in changes.values():\n    for file in file_list:\n        if file in protected_files:\n            print(f'ERROR: Protected file modified: {file}')\n            error_count += 1\n\nif error_count > 0:\n    print(f'Found {error_count} semantic diff errors')\n    sys.exit(1)\n"
+          
+      - name: Verify marker compliance
+        run: |
+          python -c "import os\nimport sys\nimport yaml\nimport re\n\n# Load valid markers from registry\nwith open('prompt-registry.yaml', 'r') as f:\n    registry = yaml.safe_load(f)\n\nvalid_markers = set(item['name'] for item in registry.get('markers', []))\n\n# Get PR title\npr_title = '${{ github.event.pull_request.title }}'\n\n# Check for marker in PR title\nmarker_pattern = r'^\\[(\\w+)\\]'\nmatch = re.match(marker_pattern, pr_title)\n\nif not match:\n    print(f'ERROR: PR title missing coherence marker: {pr_title}')\n    sys.exit(1)\n    \nmarker = match.group(1)\nif marker not in valid_markers:\n    print(f'ERROR: PR has invalid coherence marker [{marker}]: {pr_title}')\n    valid_markers_str = ', '.join(sorted(valid_markers))\n    print(f'Valid markers are: {valid_markers_str}')\n    sys.exit(1)\n    \nprint(f'PR has valid coherence marker: [{marker}]')\n"
+          
+      - name: Upload diff report
+        uses: actions/upload-artifact@v3
+        with:
+          name: diff-report
+          path: audits/diffs/*.md
+          
+  update-dashboard:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [validate, test]
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml markdown
+          
+      - name: Update dashboard
+        run: |
+          python -c "import os\nimport yaml\nimport re\nfrom datetime import datetime\n\n# Get current date\nnow = datetime.now()\ndate_str = now.strftime('%Y-%m-%d')\n\n# Load registry data\nwith open('prompt-registry.yaml', 'r') as f:\n    registry = yaml.safe_load(f)\n    \nmodules = registry.get('modules', [])\n\n# Get latest commit hash\ncommit_hash = os.environ.get('GITHUB_SHA', '')[:7]\n\n# Load current dashboard\ndashboard_path = 'audits/dashboards/overview.md'\nwith open(dashboard_path, 'r') as f:\n    dashboard = f.read()\n    \n# Update date and commit in dashboard\ndashboard = re.sub(r'Last Updated: .*', f'Last Updated: {date_str}', dashboard)\n\n# Write updated dashboard\nwith open(dashboard_path, 'w') as f:\n    f.write(dashboard)\n    \nprint(f'Dashboard updated with latest data')\n"
+          
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add audits/dashboards/overview.md
+          git commit -m "[chore] Update dashboard" || echo "No changes to commit"
+          git push
