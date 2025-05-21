@@ -80,6 +80,9 @@ For parallel execution of tasks, use the ParallelFeatureDevCycle chain:
 ```
 
 This utilizes the Module_ParallelAsync to coordinate multiple tasks running concurrently.
+The workflow orchestrator reads `execution-budget.yaml` to determine the
+maximum number of parallel threads and spawns them using a lightweight
+scheduler.
 
 ### Analyzing Diffs
 
