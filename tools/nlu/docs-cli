@@ -1,0 +1,543 @@
+#!/usr/bin/env python3
+"""
+Documentation CLI Tool
+
+This module provides a unified command-line interface for interacting with
+the entire NLU documentation pipeline and analysis tools.
+"""
+
+import os
+import sys
+import subprocess
+import argparse
+import logging
+from pathlib import Path
+import json
+import importlib.util
+from typing import Dict, List, Any, Optional
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger('nlu.cli')
+
+# Define tool modules mapping
+TOOL_MODULES = {
+    "process": "processor",
+    "embed": "embedder",
+    "synthesize": "synthesizer",
+    "validate": "validator",
+    "dashboard": "dashboard_generator",
+    "search": "semantic_search",
+    "impact": "impact_analyzer"
+}
+
+class DocumentationCLI:
+    """Command-line interface for the documentation pipeline."""
+    
+    def __init__(self, base_path: str = "."):
+        """
+        Initialize the CLI tool.
+        
+        Args:
+            base_path: Base path of the repository
+        """
+        self.base_path = Path(base_path)
+        self.tools_path = self.base_path / "tools" / "nlu"
+        self.docs_path = self.base_path / "docs"
+        self.nlu_path = self.docs_path / "nlu"
+        self.synthesis_path = self.docs_path / "synthesis"
+        
+        # Create directories if they don't exist
+        self.nlu_path.mkdir(parents=True, exist_ok=True)
+        self.synthesis_path.mkdir(parents=True, exist_ok=True)
+        (self.synthesis_path / "reports").mkdir(exist_ok=True)
+        (self.synthesis_path / "visualizations").mkdir(exist_ok=True)
+        
+        # Set default file paths
+        self.registry_path = self.nlu_path / "document_registry.json"
+        self.relationships_path = self.nlu_path / "relationship_map.json"
+        self.embeddings_path = self.nlu_path / "embeddings" / "document_embeddings.json"
+        self.validation_report_path = self.synthesis_path / "reports" / "validation_report.md"
+        
+    def _import_module(self, module_name: str) -> Any:
+        """
+        Dynamically import a module by name.
+        
+        Args:
+            module_name: Name of the module to import
+            
+        Returns:
+            Imported module or None if not found
+        """
+        module_path = self.tools_path / f"{module_name}.py"
+        if not module_path.exists():
+            logger.error(f"Module {module_name}.py not found at {module_path}")
+            return None
+            
+        try:
+            spec = importlib.util.spec_from_file_location(module_name, module_path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            return module
+        except Exception as e:
+            logger.error(f"Failed to import module {module_name}: {e}")
+            return None
+    
+    def process(self, args) -> int:
+        """Process the repository and extract metadata."""
+        logger.info("Processing repository...")
+        
+        # Import processor module
+        processor_module = self._import_module("processor")
+        if not processor_module:
+            return 1
+            
+        # Create processor and process repository
+        processor = processor_module.DocumentProcessor(self.base_path, args.config)
+        processor.process_and_save(args.output_dir)
+        
+        logger.info("Repository processing complete.")
+        return 0
+    
+    def embed(self, args) -> int:
+        """Generate embeddings for repository documents."""
+        logger.info("Generating embeddings...")
+        
+        # Check if document registry exists
+        if not args.registry.exists():
+            logger.error(f"Document registry not found at {args.registry}")
+            return 1
+            
+        # Import embedder module
+        embedder_module = self._import_module("embedder")
+        if not embedder_module:
+            return 1
+            
+        # Create embedder and generate embeddings
+        embedder = embedder_module.DocumentEmbedder(args.registry, args.model)
+        embedder.process_and_save(args.output)
+        
+        logger.info("Embeddings generation complete.")
+        return 0
+    
+    def synthesize(self, args) -> int:
+        """Generate synthesis reports."""
+        logger.info("Generating synthesis reports...")
+        
+        # Check if required files exist
+        if not args.registry.exists():
+            logger.error(f"Document registry not found at {args.registry}")
+            return 1
+            
+        if not args.relationships.exists():
+            logger.error(f"Relationship map not found at {args.relationships}")
+            return 1
+            
+        # Import synthesizer module
+        synthesizer_module = self._import_module("synthesizer")
+        if not synthesizer_module:
+            return 1
+            
+        # Create synthesizer and generate reports
+        synthesizer = synthesizer_module.DocumentSynthesizer(args.registry, args.relationships)
+        synthesizer.generate_all_reports(args.output_dir)
+        
+        logger.info("Synthesis reports generation complete.")
+        return 0
+    
+    def validate(self, args) -> int:
+        """Validate documentation completeness."""
+        logger.info("Validating documentation...")
+        
+        # Check if required files exist
+        if not args.registry.exists():
+            logger.error(f"Document registry not found at {args.registry}")
+            return 1
+            
+        if not args.criteria.exists():
+            logger.error(f"Completeness criteria not found at {args.criteria}")
+            return 1
+            
+        # Import validator module
+        validator_module = self._import_module("validator")
+        if not validator_module:
+            return 1
+            
+        # Create validator and generate report
+        validator = validator_module.DocumentationValidator(args.registry, args.criteria)
+        validator.validate_and_report(args.report)
+        
+        logger.info("Documentation validation complete.")
+        return 0
+    
+    def dashboard(self, args) -> int:
+        """Generate documentation dashboard."""
+        logger.info("Generating documentation dashboard...")
+        
+        # Check if required files exist
+        if not args.registry.exists():
+            logger.error(f"Document registry not found at {args.registry}")
+            return 1
+            
+        if not args.relationships.exists():
+            logger.error(f"Relationship map not found at {args.relationships}")
+            return 1
+            
+        if not args.template.exists():
+            logger.error(f"Dashboard template not found at {args.template}")
+            return 1
+            
+        # Import dashboard generator module
+        dashboard_module = self._import_module("dashboard_generator")
+        if not dashboard_module:
+            return 1
+            
+        # Create dashboard generator and generate dashboard
+        generator = dashboard_module.DashboardGenerator(
+            args.registry,
+            args.relationships,
+            args.validation_report,
+            args.template
+        )
+        generator.save_dashboard(args.output)
+        
+        logger.info(f"Dashboard generated at {args.output}")
+        return 0
+    
+    def search(self, args) -> int:
+        """Search documentation semantically."""
+        # Check if required files exist
+        if not args.registry.exists():
+            logger.error(f"Document registry not found at {args.registry}")
+            return 1
+            
+        if not args.embeddings.exists():
+            logger.error(f"Embeddings not found at {args.embeddings}")
+            return 1
+            
+        # Import search module
+        search_module = self._import_module("semantic_search")
+        if not search_module:
+            return 1
+            
+        # Create searcher and run search
+        searcher = search_module.SemanticSearch(args.registry, args.embeddings)
+        
+        if args.query:
+            # Single query mode
+            results = searcher.search(args.query, args.num_results, args.layer)
+            
+            if args.json:
+                print(json.dumps(results, indent=2))
+            else:
+                print(f"Search results for '{args.query}':")
+                for i, result in enumerate(results):
+                    print(f"\n{i+1}. {result['title']} [{result['layer']}]")
+                    print(f"   Path: {result['id']}")
+                    print(f"   Score: {result['score']:.2f}")
+                    print(f"   {result['snippet']}")
+        else:
+            # Interactive mode
+            searcher.search_interactive()
+        
+        return 0
+    
+    def impact(self, args) -> int:
+        """Analyze impact of changes to documentation."""
+        logger.info("Analyzing impact of changes...")
+        
+        # Check if required files exist
+        if not args.registry.exists():
+            logger.error(f"Document registry not found at {args.registry}")
+            return 1
+            
+        if not args.relationships.exists():
+            logger.error(f"Relationship map not found at {args.relationships}")
+            return 1
+            
+        # Import impact analyzer module
+        impact_module = self._import_module("impact_analyzer")
+        if not impact_module:
+            return 1
+            
+        # Create analyzer and analyze impact
+        analyzer = impact_module.ImpactAnalyzer(args.registry, args.relationships)
+        impact = analyzer.analyze_impact(args.documents, args.max_depth)
+        
+        if args.json:
+            # Output JSON results
+            if args.output:
+                with open(args.output, 'w') as f:
+                    json.dump(impact, f, indent=2)
+            else:
+                print(json.dumps(impact, indent=2))
+        else:
+            # Generate and output report
+            report = analyzer.generate_report(impact)
+            
+            if args.output:
+                with open(args.output, 'w') as f:
+                    f.write(report)
+                logger.info(f"Impact report saved to {args.output}")
+            else:
+                print(report)
+        
+        return 0
+    
+    def run_all(self, args) -> int:
+        """Run the entire documentation pipeline."""
+        logger.info("Running full documentation pipeline...")
+        
+        # Process repository
+        process_args = argparse.Namespace(
+            config=self.nlu_path / "schemas" / "processor_config.yaml",
+            output_dir=self.nlu_path
+        )
+        result = self.process(process_args)
+        if result != 0:
+            return result
+            
+        # Generate embeddings
+        embed_args = argparse.Namespace(
+            registry=self.registry_path,
+            model="text-embedding-3-large",
+            output=self.embeddings_path
+        )
+        result = self.embed(embed_args)
+        if result != 0:
+            return result
+            
+        # Generate synthesis reports
+        synthesize_args = argparse.Namespace(
+            registry=self.registry_path,
+            relationships=self.relationships_path,
+            output_dir=self.synthesis_path / "reports"
+        )
+        result = self.synthesize(synthesize_args)
+        if result != 0:
+            return result
+            
+        # Validate documentation
+        validate_args = argparse.Namespace(
+            registry=self.registry_path,
+            criteria=self.nlu_path / "schemas" / "completeness_criteria.yaml",
+            report=self.validation_report_path
+        )
+        result = self.validate(validate_args)
+        if result != 0:
+            return result
+            
+        # Generate dashboard
+        dashboard_args = argparse.Namespace(
+            registry=self.registry_path,
+            relationships=self.relationships_path,
+            validation_report=self.validation_report_path,
+            template=self.nlu_path / "dashboard_template.md",
+            output=self.synthesis_path / "reports" / "documentation_dashboard.md"
+        )
+        result = self.dashboard(dashboard_args)
+        if result != 0:
+            return result
+            
+        logger.info("Full documentation pipeline completed successfully.")
+        return 0
+    
+    def open_dashboard(self) -> int:
+        """Open the documentation dashboard in the default browser."""
+        dashboard_path = self.synthesis_path / "reports" / "documentation_dashboard.md"
+        if not dashboard_path.exists():
+            logger.error(f"Dashboard not found at {dashboard_path}")
+            return 1
+            
+        # Try to open in default browser
+        try:
+            import webbrowser
+            webbrowser.open(f"file://{dashboard_path.absolute()}")
+            logger.info(f"Opened dashboard at {dashboard_path}")
+            return 0
+        except Exception as e:
+            logger.error(f"Failed to open dashboard: {e}")
+            return 1
+
+
+def main():
+    """Command-line entry point."""
+    # Create main parser
+    parser = argparse.ArgumentParser(
+        description="Documentation CLI Tool",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Run the entire pipeline
+  python -m docs-cli run-all
+  
+  # Process the repository
+  python -m docs-cli process
+  
+  # Search documentation
+  python -m docs-cli search --query "prompt modules"
+  
+  # Analyze impact of changes
+  python -m docs-cli impact --documents README.md AGENTS.md
+  
+  # Generate dashboard
+  python -m docs-cli dashboard
+  
+  # Open dashboard in browser
+  python -m docs-cli open-dashboard
+        """
+    )
+    
+    parser.add_argument("--base-path", default=".",
+                        help="Base path of the repository")
+    
+    # Create subparsers
+    subparsers = parser.add_subparsers(dest="command", help="Command to run")
+    
+    # Process command
+    process_parser = subparsers.add_parser("process", help="Process repository and extract metadata")
+    process_parser.add_argument("--config", type=Path, 
+                                help="Path to processor configuration")
+    process_parser.add_argument("--output-dir", type=Path, 
+                                help="Directory to save the output files")
+    
+    # Embed command
+    embed_parser = subparsers.add_parser("embed", help="Generate embeddings for repository documents")
+    embed_parser.add_argument("--registry", type=Path, 
+                              help="Path to document registry JSON file")
+    embed_parser.add_argument("--model", default="text-embedding-3-large", 
+                              help="Embedding model to use")
+    embed_parser.add_argument("--output", type=Path, 
+                              help="Output path for embeddings")
+    
+    # Synthesize command
+    synthesize_parser = subparsers.add_parser("synthesize", help="Generate synthesis reports")
+    synthesize_parser.add_argument("--registry", type=Path, 
+                                   help="Path to document registry JSON file")
+    synthesize_parser.add_argument("--relationships", type=Path, 
+                                   help="Path to relationship map JSON file")
+    synthesize_parser.add_argument("--output-dir", type=Path, 
+                                   help="Directory to save the reports")
+    
+    # Validate command
+    validate_parser = subparsers.add_parser("validate", help="Validate documentation completeness")
+    validate_parser.add_argument("--registry", type=Path, 
+                                 help="Path to document registry JSON file")
+    validate_parser.add_argument("--criteria", type=Path, 
+                                 help="Path to completeness criteria YAML file")
+    validate_parser.add_argument("--report", type=Path, 
+                                 help="Path to save the validation report")
+    
+    # Dashboard command
+    dashboard_parser = subparsers.add_parser("dashboard", help="Generate documentation dashboard")
+    dashboard_parser.add_argument("--registry", type=Path, 
+                                  help="Path to document registry JSON file")
+    dashboard_parser.add_argument("--relationships", type=Path, 
+                                  help="Path to relationship map JSON file")
+    dashboard_parser.add_argument("--validation-report", type=Path, 
+                                  help="Path to validation report")
+    dashboard_parser.add_argument("--template", type=Path, 
+                                  help="Path to dashboard template")
+    dashboard_parser.add_argument("--output", type=Path, 
+                                  help="Output path for the dashboard")
+    
+    # Search command
+    search_parser = subparsers.add_parser("search", help="Search documentation semantically")
+    search_parser.add_argument("--registry", type=Path, 
+                               help="Path to document registry JSON file")
+    search_parser.add_argument("--embeddings", type=Path, 
+                               help="Path to document embeddings JSON file")
+    search_parser.add_argument("--query", 
+                               help="Search query (if not provided, runs in interactive mode)")
+    search_parser.add_argument("--num-results", type=int, default=5, 
+                               help="Number of results to return")
+    search_parser.add_argument("--layer", 
+                               help="Filter results by taxonomy layer")
+    search_parser.add_argument("--json", action="store_true", 
+                               help="Output results in JSON format")
+    
+    # Impact command
+    impact_parser = subparsers.add_parser("impact", help="Analyze impact of changes to documentation")
+    impact_parser.add_argument("--registry", type=Path, 
+                               help="Path to document registry JSON file")
+    impact_parser.add_argument("--relationships", type=Path, 
+                               help="Path to relationship map JSON file")
+    impact_parser.add_argument("--documents", nargs="+", required=True,
+                               help="List of documents to analyze")
+    impact_parser.add_argument("--max-depth", type=int, default=2,
+                               help="Maximum depth for impact analysis")
+    impact_parser.add_argument("--output", type=Path, 
+                               help="Output path for impact report")
+    impact_parser.add_argument("--json", action="store_true",
+                               help="Output results in JSON format")
+    
+    # Run all command
+    run_all_parser = subparsers.add_parser("run-all", help="Run the entire documentation pipeline")
+    
+    # Open dashboard command
+    open_dashboard_parser = subparsers.add_parser("open-dashboard", 
+                                                help="Open the documentation dashboard in the default browser")
+    
+    # Parse arguments
+    args = parser.parse_args()
+    
+    # Create CLI tool and set default values
+    cli = DocumentationCLI(args.base_path)
+    
+    # Set default values for parsers
+    if args.command == "process":
+        args.config = args.config or cli.nlu_path / "schemas" / "processor_config.yaml"
+        args.output_dir = args.output_dir or cli.nlu_path
+    elif args.command == "embed":
+        args.registry = args.registry or cli.registry_path
+        args.output = args.output or cli.embeddings_path
+    elif args.command == "synthesize":
+        args.registry = args.registry or cli.registry_path
+        args.relationships = args.relationships or cli.relationships_path
+        args.output_dir = args.output_dir or cli.synthesis_path / "reports"
+    elif args.command == "validate":
+        args.registry = args.registry or cli.registry_path
+        args.criteria = args.criteria or cli.nlu_path / "schemas" / "completeness_criteria.yaml"
+        args.report = args.report or cli.validation_report_path
+    elif args.command == "dashboard":
+        args.registry = args.registry or cli.registry_path
+        args.relationships = args.relationships or cli.relationships_path
+        args.validation_report = args.validation_report or cli.validation_report_path
+        args.template = args.template or cli.nlu_path / "dashboard_template.md"
+        args.output = args.output or cli.synthesis_path / "reports" / "documentation_dashboard.md"
+    elif args.command == "search":
+        args.registry = args.registry or cli.registry_path
+        args.embeddings = args.embeddings or cli.embeddings_path
+    elif args.command == "impact":
+        args.registry = args.registry or cli.registry_path
+        args.relationships = args.relationships or cli.relationships_path
+    
+    # Run command
+    if args.command == "process":
+        return cli.process(args)
+    elif args.command == "embed":
+        return cli.embed(args)
+    elif args.command == "synthesize":
+        return cli.synthesize(args)
+    elif args.command == "validate":
+        return cli.validate(args)
+    elif args.command == "dashboard":
+        return cli.dashboard(args)
+    elif args.command == "search":
+        return cli.search(args)
+    elif args.command == "impact":
+        return cli.impact(args)
+    elif args.command == "run-all":
+        return cli.run_all(args)
+    elif args.command == "open-dashboard":
+        return cli.open_dashboard()
+    else:
+        parser.print_help()
+        return 1
+
+
+if __name__ == "__main__":
+    exit(main())
