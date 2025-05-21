@@ -9,8 +9,9 @@ from ai_workflow import (
 
 def test_orchestrator_execute_chain(tmp_path):
     orch = WorkflowOrchestrator()
-    result = orch.execute_chain("demo", {"foo": "bar"})
-    assert result["status"] == "executed"
+    result = orch.execute_chain("DocumentationUpdate", {"foo": "bar"})
+    assert result["status"] == "completed"
+    assert "Module_DocWriter" in result["modules"]
     path = orch.export_context_graph(output_dir=tmp_path.as_posix())
     assert os.path.exists(path)
 
