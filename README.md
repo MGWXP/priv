@@ -14,6 +14,7 @@ This repository implements a modern application development workflow optimized f
 - Lightweight workflow orchestration utilities (CLI-driven)
 - Optimized diff analyzer initialization and context graph export
 - Asynchronous scheduler for true parallel task orchestration
+- Smart diff analyzer that validates coherence markers and coding standards
 
 ### Milestone tags (v0.9 → v1.3)
 

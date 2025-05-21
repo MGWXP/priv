@@ -23,3 +23,7 @@
 ## Loop N — Merge parallel-orchestration upgrade (2025-05-21)
 * Integrated parallel executor, DiffAnalyzer V2 gate, BugFix cycle.
 * Tag: v1.0.0
+
+## 2025-05-22
+- Expanded `DiffAnalyzerV2` with marker alignment checks and coding standard validation.
+- Updated module documentation and README with new analyzer capabilities.

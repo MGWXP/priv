@@ -34,3 +34,12 @@ def test_diff_analyzer_v2_fix_requires_test(tmp_path):
     test_analysis = analyzer.analyze_file_diff(test_old, test_new, "tests/test_foo.py")
     result = analyzer.verify_marker_alignment([analysis, test_analysis], "fix")
     assert result["compliant"] is True
+
+
+def test_coding_standard_check(tmp_path):
+    analyzer = DiffAnalyzerV2()
+    old = ""
+    new = "def bar():\n    return 1\n"
+    analysis = analyzer.analyze_file_diff(old, new, "src/bar.py")
+    result = analyzer.check_coding_standards([analysis])
+    assert result["compliant"] is False
