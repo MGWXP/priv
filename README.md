@@ -14,15 +14,30 @@ This repository implements a modern application development workflow optimized f
 - Lightweight workflow orchestration utilities (CLI-driven)
 - Optimized diff analyzer initialization and context graph export
 
+### Milestone tags (v0.9 → v1.2)
+
+| Tag | Highlights |
+| --- | ---------- |
+| v0.9 | Baseline CLI workflow and audit trail |
+| v1.0 | Parallel executor and DiffAnalyzer V2 |
+| v1.1 | Context graphs and dashboards |
+| v1.2 | Orchestrator refactor and bug fixes |
+
 ## Getting Started
 
 1. Review `AGENTS.md` to understand the AI orchestration guidelines
 2. Explore the `prompt-library/` to see available AI instruction modules
 3. Check `prompt-registry.yaml` for the index of all prompt modules
-4. Run tests with `pytest` to verify everything is working
-5. Ensure the `ai_workflow` package is installed or available on your `PYTHONPATH`.
-6. Set the `SECRET_KEY` environment variable before running the application.
-7. Configure integration credentials using environment variables or a `.env` file.
+4. Run the bootstrap script to install dependencies:
+
+   ```bash
+   ./scripts/bootstrap.sh
+   ```
+
+5. Run tests with `pytest` to verify everything is working
+6. Ensure the `ai_workflow` package is installed or available on your `PYTHONPATH`.
+7. Set the `SECRET_KEY` environment variable before running the application.
+8. Configure integration credentials using environment variables or a `.env` file.
 
 ### Environment Configuration
 

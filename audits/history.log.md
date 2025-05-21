@@ -19,3 +19,7 @@
   orchestration.
 - Added test coverage for the parallel chain and documented the new scheduler in
   the README.
+
+## Loop N — Merge parallel-orchestration upgrade (2025-05-21)
+* Integrated parallel executor, DiffAnalyzer V2 gate, BugFix cycle.
+* Tag: v1.0.0

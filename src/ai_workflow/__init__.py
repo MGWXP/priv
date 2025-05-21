@@ -1,15 +1,14 @@
-"""AI workflow package initialization."""
+"""
+AI Workflow package – Codex Web-Native.
+Version: 1.0.0
+"""
 
-from .context_graphs import ContextGraphManager
 from .orchestrator import WorkflowOrchestrator
-from .performance_monitor import PerformanceMonitor
+from .context_graphs import ContextGraphManager
 from .semantic_diff import SemanticDiffAnalyzer
-from .diff_analyzer_v2 import DiffAnalyzerV2
 
 __all__ = [
     "WorkflowOrchestrator",
     "ContextGraphManager",
     "SemanticDiffAnalyzer",
-    "DiffAnalyzerV2",
-    "PerformanceMonitor",
 ]
