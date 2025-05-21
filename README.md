@@ -38,6 +38,10 @@ DATABASE_URL=sqlite:///app.db
 
 These values are automatically loaded when the application starts.
 
+## QuickStart
+
+If you just want to see the system in action, follow the [QuickStart Guide](docs/quickstart.md). It walks through environment setup, running the NLU documentation pipeline, and opening the interactive knowledge graph viewer.
+
 ## Development Workflow
 
 This project follows the Iterative Deep Research Loop:
