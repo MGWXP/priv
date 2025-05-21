@@ -1,4 +1,5 @@
 import os
+import pytest
 from ai_workflow import (
     WorkflowOrchestrator,
     ContextGraphManager,
@@ -58,3 +59,17 @@ def test_performance_monitor(tmp_path):
     assert isinstance(comp, dict)
     for p in dash_files:
         assert os.path.exists(p)
+
+
+@pytest.mark.asyncio
+async def test_async_parallel_chain(tmp_path):
+    orch = WorkflowOrchestrator()
+    result = await orch.execute_chain_async("ParallelFeatureDevCycle", {"foo": "bar"})
+    assert result["status"] == "completed"
+    for mod in [
+        "Module_TaskA",
+        "Module_TestGenerator",
+        "Module_DocWriter",
+        "Module_DiffAnalyzerV2",
+    ]:
+        assert mod in result["executed"]
