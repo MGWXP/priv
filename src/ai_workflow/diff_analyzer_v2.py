@@ -12,7 +12,15 @@ class DiffAnalyzerV2(SemanticDiffAnalyzer):
     """Provides smarter diff analysis for commit verification."""
 
     def classify_files(self, analyses: Iterable[Dict[str, Any]]) -> Dict[str, int]:
-        """Return counts of file categories in the diff."""
+        """Return counts of file categories in the diff.
+
+        Parameters
+        ----------
+        analyses:
+            Collection of diff metadata dictionaries produced by
+            :meth:`SemanticDiffAnalyzer.analyze_file_diff`.
+        """
+
         categories = {"tests": 0, "docs": 0, "code": 0, "others": 0}
         for analysis in analyses:
             path = analysis.get("file_path", "")
@@ -59,6 +67,10 @@ class DiffAnalyzerV2(SemanticDiffAnalyzer):
             if classes["tests"] == 0:
                 compliant = False
                 reason = "Bug fixes must modify or add tests"
+        elif marker == "test":
+            if classes["tests"] != len(list(analyses)):
+                compliant = False
+                reason = "Test marker should modify only test files"
         return {"compliant": compliant, "reason": reason}
 
     def check_coding_standards(
@@ -66,30 +78,35 @@ class DiffAnalyzerV2(SemanticDiffAnalyzer):
     ) -> Dict[str, Any]:
         """Simple coding standards check for docstrings in Python files."""
         missing_doc: List[str] = []
+        trailing_ws: List[str] = []
         for analysis in analyses:
             path = analysis.get("file_path", "")
-            if not path.endswith(".py"):
-                continue
             diff_lines = analysis.get("diff", "").splitlines()
-            func_added = any(
-                line.startswith("+def ") or line.startswith("+class ")
-                for line in diff_lines
-            )
-            docstring_added = any(
-                line.startswith('+"')
-                or line.startswith("+'''")
-                or '"""' in line
-                and line.startswith("+")
-                for line in diff_lines
-            )
-            if func_added and not docstring_added:
-                missing_doc.append(path)
+            if path.endswith(".py"):
+                func_added = any(
+                    line.startswith("+def ") or line.startswith("+class ")
+                    for line in diff_lines
+                )
+                docstring_added = any(
+                    line.startswith('+"')
+                    or line.startswith("+'''")
+                    or ('"""' in line and line.startswith("+"))
+                    for line in diff_lines
+                )
+                if func_added and not docstring_added:
+                    missing_doc.append(path)
+            if any(
+                line.startswith("+") and line.rstrip() != line for line in diff_lines
+            ):
+                trailing_ws.append(path)
+        reasons = []
         if missing_doc:
-            return {
-                "compliant": False,
-                "reason": f"Missing docstrings in: {', '.join(missing_doc)}",
-            }
-        return {"compliant": True}
+            reasons.append(f"Missing docstrings in: {', '.join(missing_doc)}")
+        if trailing_ws:
+            reasons.append(
+                f"Trailing whitespace in: {', '.join(sorted(set(trailing_ws)))}"
+            )
+        return {"compliant": not reasons, "reason": "; ".join(reasons)}
 
     def analyze_changeset(
         self, analyses: List[Dict[str, Any]], marker: str, iteration: str | None = None
@@ -103,5 +120,6 @@ class DiffAnalyzerV2(SemanticDiffAnalyzer):
             "style_reason": style_result.get("reason", ""),
         }
         report = self.generate_diff_report(analyses, marker, combined, iteration)
+        report["file_classes"] = self.classify_files(analyses)
         combined.update(report)
         return combined

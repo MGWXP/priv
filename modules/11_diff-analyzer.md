@@ -1,12 +1,12 @@
 ---
 name: "Module_DiffAnalyzerV2"
-version: "1.0"
+version: "1.1"
 description: "Analyzes code changes to ensure coherence marker compliance and perform semantic diff verification."
 inputs: ["audits/diffs/"]
 outputs: ["audits/diffs/"]
 dependencies: []
 author: "AI"
-last_updated: "2025-05-20"
+last_updated: "2025-05-21"
 status: "active"
 ---
 
@@ -25,16 +25,17 @@ coherence marker and description.
 1. **Parse Diff**
    - Count additions and deletions per file.
    - Classify files as documentation, tests, or code.
+   - Detect trailing whitespace and missing docstrings.
 
 2. **Verify Marker Alignment**
-   - `[feat]` → primarily additions and at least one test file updated.
-   - `[fix]` → tests modified or added to prove the fix.
-   - `[docs]` → only documentation files changed.
-   - `[test]` → only test files changed.
+   - `[feat]` → net additions should outnumber deletions and a test must be present.
+   - `[fix]` → requires a test file that demonstrates the fix.
+   - `[docs]` → only documentation files may be modified.
+   - `[test]` → only test files should change.
 
 3. **Check Coding Standards**
    - New Python functions or classes must include docstrings.
-   - Flag obvious style issues such as trailing whitespace or large blocks of commented code.
+   - Flag obvious style issues such as trailing whitespace or large commented blocks.
 
 4. **Produce Verdict**
    - Output a summary stating whether the diff matches the marker.
