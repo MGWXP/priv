@@ -17,5 +17,27 @@ status: "active"
 Provide enhanced analysis of code diffs to verify coherence marker compliance and highlight semantic changes.
 
 ## Prompt
+Analyze the provided diff and confirm that the changes align with the commit's
+coherence marker and description.
 
-Analyze provided diffs, ensure commit messages match the changes, and record findings in the audits directory.
+### Checklist
+
+1. **Parse Diff**
+   - Count additions and deletions per file.
+   - Classify files as documentation, tests, or code.
+
+2. **Verify Marker Alignment**
+   - `[feat]` → primarily additions and at least one test file updated.
+   - `[fix]` → tests modified or added to prove the fix.
+   - `[docs]` → only documentation files changed.
+   - `[test]` → only test files changed.
+
+3. **Check Coding Standards**
+   - New Python functions or classes must include docstrings.
+   - Flag obvious style issues such as trailing whitespace or large blocks of commented code.
+
+4. **Produce Verdict**
+   - Output a summary stating whether the diff matches the marker.
+   - Save a YAML report in `audits/diffs/` with totals and the compliance status.
+
+Record any mismatches as warnings so CI can fail when the changeset does not respect the coherence rules.
