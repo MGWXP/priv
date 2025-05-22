@@ -157,3 +157,13 @@ Configure the following branch protection rules for the `main` branch:
    - Update the history log when making significant changes
 
 By following these guidelines, you'll ensure smooth collaboration and maintain the integrity of the Codex Web-Native framework.
+
+## Handling Merge Conflicts
+
+When pull requests cannot be merged automatically, run the `MergeResolutionCycle` chain to address conflicts:
+
+```bash
+./scripts/ai_workflow_cli.py execute-chain MergeResolutionCycle
+```
+
+The cycle attempts to resolve conflict markers in `README.md` and `audits/history.log.md`, applies fixes, regenerates tests, and validates the result with `DiffAnalyzerV2`.

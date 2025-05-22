@@ -63,6 +63,11 @@ These values are automatically loaded when the application starts.
 
 If you just want to see the system in action, follow the [QuickStart Guide](docs/quickstart.md). It walks through environment setup, running the NLU documentation pipeline, and opening the interactive knowledge graph viewer.
 
+## Custom Instructions
+
+For best results in ChatGPT, copy the snippet in [docs/custom-instructions.md](docs/custom-instructions.md) into your custom instructions profile. This primes the AI with the repository's modular workflow and recursive refinement approach.
+
+
 ## Development Workflow
 
 This project follows the Iterative Deep Research Loop:
