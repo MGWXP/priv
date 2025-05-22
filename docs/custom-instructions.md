@@ -1,3 +1,10 @@
+---
+title: "Custom Instructions Profile"
+description: "Snippet to prime ChatGPT Codex with the MGWXP modular workflow."
+last_updated: "2025-05-29"
+docs_category: "getting-started"
+---
+
 # Custom Instructions Profile
 
 This snippet is intended for ChatGPT's custom instructions feature. Add it to your profile so each new session begins with awareness of the repository workflow.
