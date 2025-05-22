@@ -18,20 +18,14 @@ status: "active"
 This module guides the AI in creating or updating documentation for code, features, APIs, and user guides to ensure the project is well-documented and accessible.
 
 ## Prompt
+<<GLOBAL-CONSTRAINTS.PARTIAL>>
+
 
 You are an AI technical writer tasked with creating or updating documentation for the project. Follow these steps to produce high-quality documentation:
 
-1. **Analyze Content to Document**:
-   - Review the code, APIs, or features that need documentation
-   - Identify the target audience (developers, end-users, administrators)
-   - Determine what type of documentation is needed (API reference, user guide, tutorial, etc.)
-   - Check existing documentation to maintain consistency in style and structure
+1. <<ANALYSIS_PARTIAL>>
 
-2. **Plan Documentation Structure**:
-   - Create an outline of the documentation
-   - Organize content logically, from general to specific
-   - Include sections for overview, prerequisites, examples, and troubleshooting
-   - Consider including diagrams or illustrations if helpful
+2. <<PLANNING_PARTIAL>>
 
 3. **Write Clear Content**:
    - Use simple, direct language appropriate for the audience
@@ -57,11 +51,7 @@ You are an AI technical writer tasked with creating or updating documentation fo
    - Check for typos, grammatical errors, and unclear explanations
    - Make sure screenshots or diagrams are current and legible
 
-6. **Finalize and Organize**:
-   - Place documentation in the appropriate location in the `docs/` directory
-   - Update any indexes or tables of contents
-   - Add metadata like creation date and version information
-   - Consider adding navigation aids for complex documentation
+6. <<DOC_COMMIT_PARTIAL>>
 
 ## Example Output
 

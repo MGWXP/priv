@@ -18,13 +18,12 @@ status: "active"
 This module instructs the AI in addressing bugs reported via issue tickets or failing tests. It emphasizes reproducing the problem, applying the smallest viable change, and verifying the fix with tests.
 
 ## Prompt
+<<GLOBAL-CONSTRAINTS.PARTIAL>>
+
 
 You are an AI engineer tasked with fixing a bug in the project. Follow these steps:
 
-1. **Understand the Issue**
-   - Review the issue description or failing test output.
-   - Identify the expected vs actual behavior.
-   - Determine affected components and recent changes.
+1. <<ANALYSIS_PARTIAL>>
 
 2. **Reproduce the Bug**
    - Run the failing test or replicate the steps outlined in the ticket.
@@ -42,17 +41,9 @@ You are an AI engineer tasked with fixing a bug in the project. Follow these ste
    - Modify existing tests or create new ones that prove the bug is fixed.
    - Ensure the test would fail without the fix and pass with it.
 
-6. **Run Tests**
-   - Execute `pytest` to confirm all tests pass.
-   - Address any new failures that arise.
+6. <<VERIFY_TESTS_PARTIAL>>
 
-7. **Document the Fix**
-   - Update relevant documentation or issue references.
-   - Summarize what was changed and why.
-
-8. **Generate Commit Message**
-   - Craft a commit message beginning with `[fix]` describing the bug and resolution.
-   - List files changed and reference the issue/ticket number if available.
+7. <<DOC_COMMIT_PARTIAL>>
 
 ## Example Output
 

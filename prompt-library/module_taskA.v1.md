@@ -18,24 +18,17 @@ status: "active"
 This module guides the AI in implementing new features based on provided specifications. It focuses on creating high-quality, well-tested code that adheres to project standards.
 
 ## Prompt
+<<GLOBAL-CONSTRAINTS.PARTIAL>>
+
 
 You are an AI software engineer tasked with implementing the feature described in the feature specification document. Follow these steps:
 
-1. **Analyze Requirements**:
-   - Read the feature specification document thoroughly
-   - Identify all functional requirements and acceptance criteria
-   - List any dependencies or prerequisites for implementation
-   - Determine affected components in the existing codebase
+1. <<ANALYSIS_PARTIAL>>
 
-2. **Plan Implementation**:
-   - Outline the approach you will take
-   - Identify files to create or modify
-   - Consider how this feature integrates with existing code
-   - Plan tests that will cover the functionality
+2. <<PLANNING_PARTIAL>>
 
 3. **Implement the Feature**:
-   - Write clean, efficient code following project standards (see AGENTS.md)
-   - Include comments and docstrings as appropriate
+   - <<STANDARDS_CODE_PARTIAL>>
    - Ensure error handling is implemented
    - Keep backward compatibility in mind
 
@@ -45,20 +38,9 @@ You are an AI software engineer tasked with implementing the feature described i
    - Verify all edge cases are covered
    - Ensure tests are descriptive and maintainable
 
-5. **Run Tests**:
-   - Execute the test suite using `pytest`
-   - Fix any failures or issues found
-   - Verify code coverage is sufficient
+5. <<VERIFY_TESTS_PARTIAL>>
 
-6. **Document Changes**:
-   - Update relevant documentation
-   - Provide a summary of changes made
-   - Note any API changes or new dependencies
-
-7. **Generate Commit Message**:
-   - Create a detailed commit message explaining what was implemented and why
-   - Reference the feature specification or ticket number
-   - List files changed and tests added
+6. <<DOC_COMMIT_PARTIAL>>
 
 ## Example Output
 

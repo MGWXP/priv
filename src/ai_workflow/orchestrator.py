@@ -9,6 +9,8 @@ from typing import Any, Dict, List
 
 import yaml
 from concurrent.futures import ThreadPoolExecutor
+from .prompt_loader import load_prompt
+import re
 
 from .scheduler import WorkflowScheduler
 
@@ -47,6 +49,12 @@ class WorkflowOrchestrator:
 
         self._scheduler = WorkflowScheduler(self._max_parallel)
         self._monitor = PerformanceMonitor()
+
+    def _evaluate_condition(self, expr: str, ctx: Dict[str, Any]) -> bool:
+        try:
+            return bool(eval(expr, {}, ctx))
+        except Exception:
+            return False
 
     def execute_chain(
         self, chain_name: str, context: Dict[str, Any] | None = None
@@ -121,16 +129,26 @@ class WorkflowOrchestrator:
             "status": "completed",
         }
         self._graph_manager.update_from_runtime(data)
+        if "recurse_condition" in chain_def:
+            if self._evaluate_condition(chain_def["recurse_condition"], context or {}):
+                return self._execute_chain_internal(chain_name, context)
         return data
 
     def execute_module(
         self, module_name: str, context: Dict[str, Any] | None = None
     ) -> Dict[str, Any]:
         """Execute a single prompt module."""
+        path = None
+        for mod in self._registry.get("modules", []):
+            if mod.get("name") == module_name:
+                path = mod.get("file")
+                break
 
+        prompt = load_prompt(path) if path else ""
         data: Dict[str, Any] = {
             "module": module_name,
             "context": context or {},
+            "prompt": prompt,
             "status": "executed",
         }
         self._graph_manager.update_from_runtime(data)

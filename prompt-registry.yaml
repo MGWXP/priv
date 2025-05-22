@@ -1,3 +1,7 @@
+custom_instructions:
+  file: docs/custom-instructions.md
+  version: "2025-05-22"
+
 modules:
   - name: Module_TaskA
     file: prompt-library/module_taskA.v1.md
@@ -104,6 +108,19 @@ dependencies:
   - chain: "BugFixCycle"
     sequence: ["Module_BugFixer", "Module_TestGenerator", "Module_DiffAnalyzer"]
     description: "Reproduce a bug, apply a minimal fix, generate tests, and review the diff."
+  - chain: FixAndRetestCycle
+    version: 1.0
+    marker: fix
+    description: >
+      Recursive loop that applies Module_BugFixer, regenerates tests,
+      runs DiffAnalyzer, then RegressionSuite until all tests pass.
+    sequence:
+      - Module_BugFixer
+      - Module_TestGenerator
+      - Module_DiffAnalyzer
+      - Module_RegressionSuite
+    recurse_condition: tests_failed > 0
+
 
 categories:
   - name: "feature-development"

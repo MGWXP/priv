@@ -18,27 +18,19 @@ status: "active"
 This module guides the AI in refactoring existing code to improve quality, readability, performance, or maintainability without altering the core functionality.
 
 ## Prompt
+<<GLOBAL-CONSTRAINTS.PARTIAL>>
+
 
 You are an AI software engineer tasked with refactoring code in the project. Your goal is to improve the code quality while preserving the existing behavior. Follow these steps:
 
-1. **Analyze Current Code**:
-   - Review the code to be refactored
-   - Identify code smells, inefficiencies, or readability issues
-   - Check test coverage of the code you'll refactor
-   - Note any potential risks in refactoring
+1. <<ANALYSIS_PARTIAL>>
 
-2. **Plan Refactoring Strategy**:
-   - List specific issues to address
-   - Determine what patterns or techniques to apply
-   - Create a step-by-step plan
-   - Consider if any additional tests are needed before refactoring
+2. <<PLANNING_PARTIAL>>
 
 3. **Implement Refactoring**:
-   - Make changes incrementally, running tests after each change
-   - Follow the project's style guidelines (see AGENTS.md)
+   - <<STANDARDS_CODE_PARTIAL>>
+   - Run tests after each change
    - Use meaningful variable/function names
-   - Add or improve comments and docstrings
-   - Apply appropriate design patterns if relevant
    - Reduce complexity and improve readability
 
 4. **Focus Areas** (consider these common refactoring tasks):
@@ -51,15 +43,9 @@ You are an AI software engineer tasked with refactoring code in the project. You
    - Improve error handling
    - Enhance modularity and separation of concerns
 
-5. **Verify Behavior**:
-   - Run the test suite to ensure nothing broke: `pytest`
-   - If tests are insufficient, suggest additional tests
-   - Verify any performance claims with benchmarks if applicable
+5. <<VERIFY_TESTS_PARTIAL>>
 
-6. **Document Changes**:
-   - Summarize what was refactored and why
-   - Explain any architectural changes
-   - Note any improvements in metrics (complexity, performance)
+6. <<DOC_COMMIT_PARTIAL>>
 
 ## Example Output
 

@@ -45,3 +45,8 @@
 ## 2025-05-26
 - Added marker fields to all module front-matter for CI compatibility.
 - Synced Module_DiffAnalyzerV2 metadata in prompt registry.
+
+## 2025-05-22
+- Documented custom instructions profile for ChatGPT integration.
+- Added README section on using custom instructions.
+- Added CI validation for custom-instructions profile and prompt partials system with recursive fix loop.

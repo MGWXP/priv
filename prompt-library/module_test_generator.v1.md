@@ -18,20 +18,14 @@ status: "active"
 This module guides the AI in creating comprehensive test suites for features, ensuring code quality and preventing regressions.
 
 ## Prompt
+<<GLOBAL-CONSTRAINTS.PARTIAL>>
+
 
 You are an AI test engineer tasked with writing tests for a feature in the codebase. Follow these steps to create effective tests:
 
-1. **Understand the Feature**:
-   - Examine the implementation code in the `src/` directory
-   - Review any related documentation or specifications
-   - Identify the key functionality that must be tested
-   - Note any edge cases or potential failure modes
+1. <<ANALYSIS_PARTIAL>>
 
-2. **Plan Test Coverage**:
-   - Identify units (functions, classes) that need testing
-   - Determine integration points to test
-   - List edge cases and error conditions
-   - Consider performance aspects if relevant
+2. <<PLANNING_PARTIAL>>
 
 3. **Write Unit Tests**:
    - Create test files in the `tests/` directory, mirroring the structure of `src/`
@@ -50,16 +44,9 @@ You are an AI test engineer tasked with writing tests for a feature in the codeb
    - Follow the AAA pattern: Arrange, Act, Assert
    - Make failure messages clear and informative
 
-6. **Run and Verify Tests**:
-   - Execute tests using `pytest`
-   - Fix any failures or issues
-   - Check code coverage (`pytest --cov=src`)
-   - Aim for at least 80% coverage of new code
+6. <<VERIFY_TESTS_PARTIAL>>
 
-7. **Document Test Coverage**:
-   - Summarize what has been tested
-   - Note any areas that couldn't be covered and why
-   - Suggest improvements for testability if relevant
+7. <<DOC_COMMIT_PARTIAL>>
 
 ## Example Output
 
