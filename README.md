@@ -118,6 +118,15 @@ Use the BugFixCycle chain to reproduce a bug, apply a fix, and review the change
 ./scripts/ai_workflow_cli.py execute-chain BugFixCycle --context '{"issue": "BUG-123"}'
 ```
 
+### Merge Conflict Workflow
+
+When a pull request results in merge conflicts, run the MergeResolutionCycle chain:
+
+```bash
+./scripts/ai_workflow_cli.py execute-chain MergeResolutionCycle \
+  --context '{"base_branch": "main"}'
+```
+
 ### Analyzing Diffs
 
 To analyze semantic diffs and verify coherence marker compliance:
