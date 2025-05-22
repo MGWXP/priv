@@ -7,7 +7,7 @@ outputs: ["audits/parallel_execution.log.md"]
 dependencies: []
 author: "AI"
 last_updated: "2025-05-20"
-marker: chore
+marker: "chore"
 status: "active"
 ---
 

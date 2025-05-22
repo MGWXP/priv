@@ -7,7 +7,7 @@ outputs: ["src/", "tests/"]
 dependencies: ["Module_TestGenerator v1.0"]
 author: "AI"
 last_updated: "2025-05-20"
-marker: feat
+marker: "feat"
 status: "active"
 ---
 

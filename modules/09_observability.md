@@ -7,7 +7,7 @@ outputs: ["audits/performance/"]
 dependencies: []
 author: "AI"
 last_updated: "2025-05-25"
-marker: chore
+marker: "chore"
 status: "active"
 ---
 
