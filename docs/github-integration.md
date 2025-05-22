@@ -113,6 +113,19 @@ The `scripts/github_integration.py` utility provides several commands:
 - `pr` - Create a pull request
 - `diff` - Generate a diff report
 
+### Handling Merge Conflicts
+
+When a pull request results in merge conflicts, use the `MergeResolutionCycle`
+workflow to automate resolution and validation:
+
+```bash
+./scripts/ai_workflow_cli.py execute-chain MergeResolutionCycle \
+  --context '{"base_branch": "main"}'
+```
+
+This chain analyzes the conflicting diff, applies fixes, generates tests, and
+updates documentation before performing a final diff review.
+
 ## Branch Protection Rules
 
 Configure the following branch protection rules for the `main` branch:

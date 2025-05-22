@@ -105,6 +105,15 @@ dependencies:
     sequence: ["Module_BugFixer", "Module_TestGenerator", "Module_DiffAnalyzer"]
     description: "Reproduce a bug, apply a minimal fix, generate tests, and review the diff."
 
+  - chain: "MergeResolutionCycle"
+    sequence:
+      - Module_DiffAnalyzer
+      - Module_BugFixer
+      - Module_TestGenerator
+      - Module_DocWriter
+      - Module_DiffAnalyzerV2
+    description: "Resolve merge conflicts and verify code/doc integrity."
+
 categories:
   - name: "feature-development"
     modules: ["Module_TaskA", "Module_TestGenerator"]

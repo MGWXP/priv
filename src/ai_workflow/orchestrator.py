@@ -75,6 +75,13 @@ class WorkflowOrchestrator:
         with self._monitor.monitor(iteration, ui_metrics or None):
             return self._execute_chain_internal(chain_name, context)
 
+    def resolve_merge_conflicts(
+        self, context: Dict[str, Any] | None = None
+    ) -> Dict[str, Any]:
+        """Run the MergeResolutionCycle chain."""
+
+        return self.execute_chain("MergeResolutionCycle", context)
+
     def _execute_chain_internal(
         self, chain_name: str, context: Dict[str, Any] | None = None
     ) -> Dict[str, Any]:
