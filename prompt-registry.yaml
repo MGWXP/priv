@@ -113,6 +113,7 @@ dependencies:
       - Module_DocWriter
       - Module_DiffAnalyzerV2
     description: "Resolve merge conflicts and verify code/doc integrity."
+    marker: "chore"
 
 categories:
   - name: "feature-development"
@@ -163,3 +164,5 @@ markers:
   - name: "perf"
     description: "Performance improvements"
     modules: ["Module_Refactor"]
+
+version: "1.4.1"

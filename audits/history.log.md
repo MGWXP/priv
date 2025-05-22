@@ -50,6 +50,13 @@
 - Introduced `MergeResolutionCycle` for automated merge conflict handling.
 - Added orchestrator helper and updated GitHub integration docs.
 
+## 2025-05-28
+- Added `marker` field to `MergeResolutionCycle` and bumped prompt registry to v1.4.1.
+
+## 2025-05-29
+- Updated `Module_TaskA` front-matter with explicit input/output fields and added
+  missing `feat` marker for CI validation.
+
 ## 2025-05-22
 - Documented custom instructions profile for ChatGPT integration.
 - Added README section on using custom instructions.
