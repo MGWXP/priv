@@ -108,3 +108,21 @@ async def test_async_parallel_chain(tmp_path):
         "Module_DiffAnalyzerV2",
     ]:
         assert mod in result["executed"]
+
+
+@pytest.mark.asyncio
+async def test_async_merge_resolution_cycle():
+    orch = WorkflowOrchestrator()
+    result = await orch.execute_chain_async(
+        "MergeResolutionCycle",
+        {"foo": "bar"},
+    )
+    assert result["status"] == "completed"
+    for mod in [
+        "Module_DiffAnalyzer",
+        "Module_BugFixer",
+        "Module_TestGenerator",
+        "Module_DocWriter",
+        "Module_DiffAnalyzerV2",
+    ]:
+        assert mod in result["executed"]
