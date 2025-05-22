@@ -63,6 +63,13 @@ These values are automatically loaded when the application starts.
 
 If you just want to see the system in action, follow the [QuickStart Guide](docs/quickstart.md). It walks through environment setup, running the NLU documentation pipeline, and opening the interactive knowledge graph viewer.
 
+### ChatGPT Codex Custom Instructions
+
+1. Open **⚙ Settings → Codex → General → Custom instructions**
+2. Paste the snippet from `docs/custom-instructions.md` **verbatim**.
+3. Save. All future chats will auto-load the modular workflow playbook.
+
+
 ## Development Workflow
 
 This project follows the Iterative Deep Research Loop:

@@ -28,6 +28,10 @@
 - Expanded `DiffAnalyzerV2` with marker alignment checks and coding standard validation.
 - Updated module documentation and README with new analyzer capabilities.
 
+## 2025-05-22
+- Documented custom instructions profile for ChatGPT integration.
+- Added README section on using custom instructions.
+
 ## 2025-05-23
 - Added dedicated `Module_BugFixer` for handling `[fix]` tasks.
 - Introduced `BugFixCycle` chain and updated prompt registry and README.
@@ -45,3 +49,4 @@
 ## 2025-05-26
 - Added marker fields to all module front-matter for CI compatibility.
 - Synced Module_DiffAnalyzerV2 metadata in prompt registry.
+
