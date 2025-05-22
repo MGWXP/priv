@@ -75,6 +75,27 @@ class WorkflowOrchestrator:
         with self._monitor.monitor(iteration, ui_metrics or None):
             return self._execute_chain_internal(chain_name, context)
 
+    def resolve_merge_conflicts(
+        self, context: Dict[str, Any] | None = None
+    ) -> Dict[str, Any]:
+        """Resolve merge conflicts then run the MergeResolutionCycle chain."""
+
+        from utils.merge_helper import auto_merge_conflict_blocks
+
+        files = ["README.md", "audits/history.log.md"]
+        for file in files:
+            try:
+                with open(file, "r", encoding="utf-8") as f:
+                    content = f.read()
+                if "<<<<" in content:
+                    merged = auto_merge_conflict_blocks(content)
+                    with open(file, "w", encoding="utf-8") as f:
+                        f.write(merged)
+            except OSError:
+                continue
+
+        return self.execute_chain("MergeResolutionCycle", context)
+
     def _execute_chain_internal(
         self, chain_name: str, context: Dict[str, Any] | None = None
     ) -> Dict[str, Any]:

@@ -16,7 +16,7 @@ This repository implements a modern application development workflow optimized f
 - Asynchronous scheduler for true parallel task orchestration
 - Smart diff analyzer that validates coherence markers and coding standards
 
-### Milestone tags (v0.9 → v1.3)
+### Milestone tags (v0.9 → v1.4)
 
 | Tag | Highlights |
 | --- | ---------- |
@@ -25,6 +25,7 @@ This repository implements a modern application development workflow optimized f
 | v1.1 | Context graphs and dashboards |
 | v1.2 | Orchestrator refactor and bug fixes |
 | v1.3 | Async workflow scheduler |
+| v1.4 | Merge conflict resolution cycle |
 
 For details on using commit markers and version tags to track these milestones,
 see [Progress Checkpointing Guidelines](docs/progress-checkpointing.md).
