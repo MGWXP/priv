@@ -82,6 +82,20 @@ def test_chain_generates_metrics(tmp_path, monkeypatch):
         assert "inp_ms" in data and "tbt_ms" in data and "cls_ms" in data
 
 
+def test_merge_resolution_cycle():
+    orch = WorkflowOrchestrator()
+    result = orch.resolve_merge_conflicts({"foo": "bar"})
+    assert result["status"] == "completed"
+    for mod in [
+        "Module_DiffAnalyzer",
+        "Module_BugFixer",
+        "Module_TestGenerator",
+        "Module_DocWriter",
+        "Module_DiffAnalyzerV2",
+    ]:
+        assert mod in result["executed"]
+
+
 @pytest.mark.asyncio
 async def test_async_parallel_chain(tmp_path):
     orch = WorkflowOrchestrator()

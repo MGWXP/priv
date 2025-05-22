@@ -46,6 +46,10 @@
 - Added marker fields to all module front-matter for CI compatibility.
 - Synced Module_DiffAnalyzerV2 metadata in prompt registry.
 
+## 2025-05-27
+- Introduced `MergeResolutionCycle` for automated merge conflict handling.
+- Added orchestrator helper and updated GitHub integration docs.
+
 ## 2025-05-22
 - Documented custom instructions profile for ChatGPT integration.
 - Added README section on using custom instructions.
