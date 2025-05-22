@@ -63,6 +63,15 @@ These values are automatically loaded when the application starts.
 
 If you just want to see the system in action, follow the [QuickStart Guide](docs/quickstart.md). It walks through environment setup, running the NLU documentation pipeline, and opening the interactive knowledge graph viewer.
 
+If you are using **ChatGPT Codex Environments**, add this repository’s
+.codex/setup.sh script to the *Setup script* field so pytest/flake8 are
+pre-installed even after the network cutoff:
+
+```bash
+# Setup script
+/workspace/priv/.codex/setup.sh
+```
+
 ## Custom Instructions
 
 For best results in ChatGPT, copy the snippet in [docs/custom-instructions.md](docs/custom-instructions.md) into your custom instructions profile. This primes the AI with the repository's modular workflow and recursive refinement approach.
