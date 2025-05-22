@@ -8,7 +8,7 @@ This guide explains how to use the Documentation CLI Tool to interact with the N
    ```bash
    # Make the CLI tool executable
    chmod +x tools/nlu/docs-cli
-   
+
    # Create a symlink in a directory that's in your PATH (optional)
    ln -s $(pwd)/tools/nlu/docs-cli /usr/local/bin/docs-cli
    ```

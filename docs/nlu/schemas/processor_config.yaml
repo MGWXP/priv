@@ -57,21 +57,21 @@ taxonomy_layers:
       - README.md
       - AGENTS.md
       - execution-budget.yaml
-      
+
   - name: prompts
     paths:
       - prompt-library/
       - modules/
-      
+
   - name: code
     paths:
       - src/
       - tests/
-      
+
   - name: docs
     paths:
       - docs/
-      
+
   - name: audit
     paths:
       - audits/

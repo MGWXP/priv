@@ -9,7 +9,7 @@ the evolution of the Codex Web-Native architecture.
   `[docs]`.
 - Use these markers to indicate the nature of the change and to trigger CI checks.
 - Mark significant milestones with a descriptive commit message, for example:
-  
+
   ```
   [feat] Checkpoint 1: basic workflow chaining achieved
   ```

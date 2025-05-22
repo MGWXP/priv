@@ -6,7 +6,7 @@ modules:
     status: active
     last_update: "2025-05-20"
     marker: feat
-    
+
   - name: Module_TestGenerator
     file: prompt-library/module_test_generator.v1.md
     version: 1.0
@@ -14,7 +14,7 @@ modules:
     status: active
     last_update: "2025-05-20"
     marker: test
-    
+
   - name: Module_Refactor
     file: prompt-library/module_refactor.v1.md
     version: 1.0
@@ -22,7 +22,7 @@ modules:
     status: active
     last_update: "2025-05-20"
     marker: refactor
-    
+
   - name: Module_DocWriter
     file: prompt-library/module_doc_writer.v1.md
     version: 1.0
@@ -30,7 +30,7 @@ modules:
     status: active
     last_update: "2025-05-20"
     marker: docs
-    
+
   - name: Module_DiffAnalyzer
     file: prompt-library/module_diff_analyzer.v1.md
     version: 1.0
@@ -84,11 +84,11 @@ dependencies:
   - chain: "FeatureDevCycle"
     sequence: ["Module_TaskA", "Module_TestGenerator", "Module_DocWriter", "Module_DiffAnalyzer"]
     description: "Standard chain to develop a feature, write tests, document, and analyze changes."
-    
+
   - chain: "RefactorCycle"
     sequence: ["Module_Refactor", "Module_TestGenerator", "Module_DiffAnalyzer"]
     description: "Workflow for refactoring existing code, verifying tests, and analyzing changes."
-    
+
   - chain: "DocumentationUpdate"
     sequence: ["Module_DocWriter", "Module_DiffAnalyzer"]
     description: "Simple chain for updating documentation and reviewing changes."
@@ -118,11 +118,11 @@ categories:
   - name: "feature-development"
     modules: ["Module_TaskA", "Module_TestGenerator"]
     description: "Modules for implementing new features"
-    
+
   - name: "maintenance"
     modules: ["Module_Refactor", "Module_DiffAnalyzer", "Module_DiffAnalyzerV2", "Module_BugFixer"]
     description: "Modules for maintaining and improving existing code"
-    
+
   - name: "documentation"
     modules: ["Module_DocWriter"]
     description: "Modules for creating and updating documentation"

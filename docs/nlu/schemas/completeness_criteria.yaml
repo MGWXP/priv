@@ -12,7 +12,7 @@ core_criteria:
       - overview
       - purpose
       - layers
-  
+
   - name: AGENTS
     path: AGENTS.md
     required: true
@@ -44,7 +44,7 @@ prompt_modules:
       - dependencies
       - author
       - last_updated
-  
+
   sections:
     required:
       - purpose
@@ -61,7 +61,7 @@ code:
     recommended:
       - tests
       - examples
-  
+
   javascript:
     required:
       - jsdoc
@@ -74,10 +74,10 @@ coverage_thresholds:
   documentation:
     src: 80  # 80% of source files should have documentation
     modules: 100  # 100% of prompt modules should have complete documentation
-  
+
   tests:
     src: 80  # 80% of source files should have tests
-    
+
   relationships:
     min_references: 1  # Each document should reference at least 1 other document
     max_orphans: 5     # Maximum number of orphaned documents allowed

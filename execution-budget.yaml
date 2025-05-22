@@ -20,12 +20,12 @@ performance_budgets:
     max_inp_ms: 200  # Input delay must be under 200ms
     max_cls_ms: 100  # Cumulative Layout Shift delay
     max_tbt_ms: 150  # Total Blocking Time
-  
+
   test_suite:
     max_runtime_seconds: 300
     max_memory_mb: 2048
     coverage_threshold_percent: 80
-  
+
   build_process:
     max_runtime_seconds: 180
     max_artifact_size_mb: 50
