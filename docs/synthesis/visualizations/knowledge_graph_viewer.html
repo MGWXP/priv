@@ -104,7 +104,7 @@
     <div id="header">
         <h1>Codex Web-Native Repository Knowledge Graph</h1>
     </div>
-    
+
     <div id="controls">
         <div id="filters">
             <div>
@@ -134,15 +134,15 @@
             <button id="focus-center">Center View</button>
         </div>
     </div>
-    
+
     <div id="network"></div>
-    
+
     <div id="details">
         <button id="close-details">&times;</button>
         <h2 id="details-title">Document Details</h2>
         <div id="details-content"></div>
     </div>
-    
+
     <div class="legend">
         <h3 style="margin-top: 0;">Legend</h3>
         <div class="legend-item">
@@ -165,7 +165,7 @@
             <div class="color-box" style="background-color: #ef4444;"></div>
             <span>Audit Layer</span>
         </div>
-        
+
         <div class="edge-line">
             <hr style="background-color: #64748b;">
             <span>References</span>
@@ -190,7 +190,7 @@
             .then(response => response.json())
             .then(graph => {
                 const container = document.getElementById('network');
-                
+
                 // Process nodes
                 const nodes = new vis.DataSet(graph.nodes.map(node => {
                     let color;
@@ -202,9 +202,9 @@
                         case 'audit': color = '#ef4444'; break; // Red
                         default: color = '#9ca3af'; // Gray
                     }
-                    
+
                     const size = node.group === 'config' ? 25 : 20;
-                    
+
                     return {
                         id: node.id,
                         label: node.label,
@@ -216,32 +216,32 @@
                         title: node.id
                     };
                 }));
-                
+
                 // Process edges
                 const edges = new vis.DataSet(graph.edges.map(edge => {
                     let color, dashes;
                     switch(edge.type) {
-                        case 'references': 
-                            color = '#64748b'; 
+                        case 'references':
+                            color = '#64748b';
                             dashes = false;
                             break;
-                        case 'implements': 
-                            color = '#10b981'; 
+                        case 'implements':
+                            color = '#10b981';
                             dashes = [5, 5];
                             break;
-                        case 'tests': 
-                            color = '#f59e0b'; 
+                        case 'tests':
+                            color = '#f59e0b';
                             dashes = [2, 2];
                             break;
-                        case 'documents': 
-                            color = '#8b5cf6'; 
+                        case 'documents':
+                            color = '#8b5cf6';
                             dashes = [5, 5];
                             break;
-                        default: 
-                            color = '#cbd5e1'; 
+                        default:
+                            color = '#cbd5e1';
                             dashes = false;
                     }
-                    
+
                     return {
                         from: edge.from,
                         to: edge.to,
@@ -254,7 +254,7 @@
                         font: { size: 10, color: '#1f2937', align: 'middle' }
                     };
                 }));
-                
+
                 // Configure physics
                 const options = {
                     physics: {
@@ -285,32 +285,32 @@
                         audit: { shape: 'triangle' }
                     }
                 };
-                
+
                 // Create network
                 const network = new vis.Network(container, { nodes, edges }, options);
-                
+
                 // Show node details on click
                 network.on('click', function(params) {
                     if (params.nodes.length === 1) {
                         const nodeId = params.nodes[0];
                         const node = nodes.get(nodeId);
-                        
+
                         document.getElementById('details-title').textContent = node.label;
-                        
+
                         let content = `
                             <p><strong>Path:</strong> ${nodeId}</p>
                             <p><strong>Type:</strong> ${node.type || 'Unknown'}</p>
                             <p><strong>Layer:</strong> ${node.group || 'Unknown'}</p>
                         `;
-                        
+
                         // Get connected nodes
                         const connectedNodes = network.getConnectedNodes(nodeId);
                         const connectedEdges = network.getConnectedEdges(nodeId);
-                        
+
                         // Outgoing relationships
                         const outgoing = [];
                         const incoming = [];
-                        
+
                         connectedEdges.forEach(edgeId => {
                             const edge = edges.get(edgeId);
                             if (edge.from === nodeId) {
@@ -327,7 +327,7 @@
                                 });
                             }
                         });
-                        
+
                         if (outgoing.length > 0) {
                             content += '<h3>Outgoing Relationships</h3><ul>';
                             outgoing.forEach(rel => {
@@ -335,7 +335,7 @@
                             });
                             content += '</ul>';
                         }
-                        
+
                         if (incoming.length > 0) {
                             content += '<h3>Incoming Relationships</h3><ul>';
                             incoming.forEach(rel => {
@@ -343,71 +343,71 @@
                             });
                             content += '</ul>';
                         }
-                        
+
                         document.getElementById('details-content').innerHTML = content;
                         document.getElementById('details').style.display = 'block';
                     } else {
                         document.getElementById('details').style.display = 'none';
                     }
                 });
-                
+
                 // Filter nodes by layer
                 document.getElementById('layer-filter').addEventListener('change', function() {
                     filterGraph();
                 });
-                
+
                 // Filter edges by relationship type
                 document.getElementById('relationship-filter').addEventListener('change', function() {
                     filterGraph();
                 });
-                
+
                 // Toggle physics
                 document.getElementById('physics-toggle').addEventListener('click', function() {
                     options.physics.enabled = !options.physics.enabled;
                     network.setOptions({ physics: options.physics });
                 });
-                
+
                 // Center view
                 document.getElementById('focus-center').addEventListener('click', function() {
                     network.fit();
                 });
-                
+
                 // Close details panel
                 document.getElementById('close-details').addEventListener('click', function() {
                     document.getElementById('details').style.display = 'none';
                 });
-                
+
                 // Filter function
                 function filterGraph() {
                     const layerFilter = document.getElementById('layer-filter').value;
                     const relationshipFilter = document.getElementById('relationship-filter').value;
-                    
+
                     // Filter nodes
                     const filteredNodeIds = graph.nodes
                         .filter(node => layerFilter === 'all' || node.group === layerFilter)
                         .map(node => node.id);
-                    
+
                     // Filter edges
                     const filteredEdgeIds = graph.edges
                         .filter(edge => {
-                            const nodeCondition = 
-                                filteredNodeIds.includes(edge.from) && 
+                            const nodeCondition =
+                                filteredNodeIds.includes(edge.from) &&
                                 filteredNodeIds.includes(edge.to);
-                                
-                            const relCondition = 
-                                relationshipFilter === 'all' || 
+
+                            const relCondition =
+                                relationshipFilter === 'all' ||
                                 edge.type === relationshipFilter;
-                                
+
                             return nodeCondition && relCondition;
                         })
                         .map((edge, index) => `edge-${index}`);
-                    
+
                     // Update view
                     nodes.update(graph.nodes.map(node => ({
                         id: node.id,
                         hidden: !filteredNodeIds.includes(node.id)
                     })));
-                    
+
                     edges.update(graph.edges.map((edge, index) => ({
                         id: `edge-${index}`,
                         from: edge.from,
